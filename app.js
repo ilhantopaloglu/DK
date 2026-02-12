@@ -3,8 +3,8 @@ const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let flowData = null;
-let waitingForDetail = false;
 let currentIntent = null;
+let waitingForDetail = false;
 
 fetch("flow.json")
   .then(res => res.json())
@@ -29,7 +29,7 @@ function aiTyping(text) {
     i++;
     if (i >= text.length) clearInterval(interval);
     messages.scrollTop = messages.scrollHeight;
-  }, 20);
+  }, 18);
 }
 
 function detectIntent(text) {
@@ -42,52 +42,35 @@ function detectIntent(text) {
   return null;
 }
 
+function fallbackResponse() {
+  aiTyping("Biraz karıştı gibi hissettim 🤔\nDoküman ilk aktarımı mı yapıyorsun, yoksa bir iyileştirme ya da hata giderme mi? Kısaca söyler misin?");
+}
+
 function aiRespond(userText) {
+  const text = userText.toLowerCase();
+
+  // Kullanıcı kararsız / alakasız yazdıysa
+  if (text.includes("bilmiyorum") || text.includes("alo") || text.includes("kimse var mı")) {
+    aiTyping("Buradayım 🙂\nNe yapmak istediğini kısaca tarif edersen yönlendireyim.");
+    return;
+  }
+
+  // Henüz intent yoksa
   if (!currentIntent) {
-    const intent = detectIntent(userText);
+    const intent = detectIntent(text);
 
     if (!intent) {
-      aiTyping("Bunu bir değişiklik talebi olarak yorumlayamadım 🤔\nDoküman ilk aktarımı mı yapıyorsun, yoksa bir iyileştirme ya da hata giderme mi?");
+      fallbackResponse();
       return;
     }
 
     currentIntent = intent;
+    waitingForDetail = true;
 
     if (intent === "ilk_dokuman") {
-      aiTyping("Anladım 👍 İlk doküman aktarımı yapıyorsun.\nHangi ürün için ve hangi dokümanı aktarıyorsun?");
+      aiTyping("Anladım 👍 İlk doküman aktarımı.\nHangi ürün için ve hangi dokümanı aktarıyorsun?");
+      return;
     }
 
     if (intent === "iyilestirme") {
-      aiTyping("Tamam, bu bir iyileştirme gibi duruyor.\nNeyi nasıl iyileştirdin? Öncesi ve sonrası kısaca anlatır mısın?");
-    }
-
-    if (intent === "hata") {
-      aiTyping("Bu bir hata giderme gibi duruyor.\nHata hangi üründe, hangi aşamada ortaya çıktı? Nasıl çözdün?");
-    }
-
-    waitingForDetail = true;
-    return;
-  }
-
-  if (waitingForDetail) {
-    aiTyping("Teşekkürler 🙌\nBu bilgilerle değişiklik talebini anlamlı şekilde oluşturabilirim. İstersen gönderip kaydedebilirsin.");
-    waitingForDetail = false;
-    return;
-  }
-}
-
-sendBtn.addEventListener("click", () => {
-  const text = input.value.trim();
-  if (!text) return;
-
-  addMessage(text, "user");
-  input.value = "";
-
-  setTimeout(() => {
-    aiRespond(text);
-  }, 400);
-});
-
-window.onload = () => {
-  aiTyping("Merhaba 👋 Doküman aktarım/güncelleme talebi yazabilirsin ya da bir şey sorabilirsin.");
-};
+      aiTyping("Bu bir iyileştirme gibi duruyor.\nNeyi nasıl iyileştirdin? Öncesi v
