@@ -12,9 +12,16 @@ function addBubble(text, sender) {
   messages.scrollTop = messages.scrollHeight;
 }
 
-function isQuestion(text) {
+function isKnowledgeQuestion(text) {
   const t = text.toLowerCase();
-  return t.includes("nedir") || t.includes("ne demek") || t.includes("fark") || t.endsWith("?");
+  return (
+    t.includes("fark") ||
+    t.includes("arasındaki fark") ||
+    t.includes("fark ne") ||
+    t.includes("farkı ne") ||
+    t.includes("nedir") ||
+    t.includes("ne demek")
+  );
 }
 
 function analyzeIntent(text) {
@@ -35,17 +42,19 @@ function analyzeIntent(text) {
 function answerKnowledge(text) {
   const t = text.toLowerCase();
 
-  if (t.includes("iyileştirme") && t.includes("uygunsuzluk") && t.includes("fark")) {
+  if ((t.includes("iyileştirme") || t.includes("iyilestirme")) && (t.includes("hata") || t.includes("uygunsuzluk")) && t.includes("fark")) {
     addBubble(
-      "Kısaca özetleyeyim:\n\n" +
-      "• İyileştirme: Üründe bir hata yokken, performans veya kaliteyi artırmak.\n" +
-      "• Uygunsuzluk giderme: Var olan bir hatayı veya standarda aykırılığı düzeltmek.\n\n" +
-      "Pratikte ikisi karışabiliyor; bu yüzden değişiklik talebinde niyetin net yazılması önemli.",
+      "Kısaca anlatayım:\n\n" +
+      "• İyileştirme: Üründe bir hata yokken daha iyi hale getirmek.\n" +
+      "• Uygunsuzluk giderme: Var olan bir hatayı veya standarda aykırı durumu düzeltmek.\n\n" +
+      "Pratikte ikisi sık karışır. O yüzden değişiklik talebinde niyetin net yazılması önemli.",
       "ai"
     );
     return true;
   }
-  return false;
+
+  addBubble("Bu daha çok bilgi alma amaçlı bir soru gibi duruyor. İstersen biraz daha detay verirsen örnekle anlatayım.", "ai");
+  return true;
 }
 
 function send() {
@@ -56,12 +65,13 @@ function send() {
   addBubble(text, "user");
   input.value = "";
 
-  setTimeout(() => respond(text), 400);
+  setTimeout(() => respond(text), 300);
 }
 
 function respond(text) {
-  if (isQuestion(text)) {
-    if (answerKnowledge(text)) return;
+  if (isKnowledgeQuestion(text)) {
+    answerKnowledge(text);
+    return;
   }
 
   if (!state.mode) {
@@ -69,7 +79,7 @@ function respond(text) {
     state.mode = intent;
 
     if (intent === "ilk_aktarim") {
-      addBubble("Bu bir ilk doküman aktarımı gibi görünüyor. Doküman numarasını ve kodunu paylaşır mısın?", "ai");
+      addBubble("Bu bir ilk doküman aktarımı gibi görünüyor. Doküman numarasını ve kodunu yazar mısın?", "ai");
       return;
     }
     if (intent === "iyilestirme") {
@@ -101,4 +111,4 @@ function respond(text) {
   }
 }
 
-addBubble("Merhaba 👋 Bir doküman aktarımı veya güncelleme talebi yazabilirsin, istersen kavramsal bir soru da sorabilirsin.", "ai");
+addBubble("Merhaba 👋 Doküman aktarımı/güncelleme talebi yazabilirsin ya da kavramsal bir soru sorabilirsin.", "ai");
