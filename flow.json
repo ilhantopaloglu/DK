@@ -1,0 +1,48 @@
+{
+"start": {
+"question": "Ne oldu da değişiklik önerisi başlattın?",
+"options": {
+"Bir hata yok, sadece ürünün ilk doküman aktarımı": "initial",
+"Bir hata yok, üründe iyileştirme fırsatı doğdu": "improvement",
+"Oluşan bir hatayı gidermek için dokümanda değişiklik yapılacak": "problem_details"
+}
+},
+"problem_details": {
+"question": "Nerede, ne zaman, ne yaşandı? Hangi ürün etkilendi?",
+"type": "free_text",
+"next": "change_done"
+},
+"change_done": {
+"question": "Bu hatayı gidermek için fiilen bir değişiklik yaptın mı?",
+"options": {
+"Evet": "change_details",
+"Hayır": "proposed_change"
+}
+},
+"change_details": {
+"question": "Yaptığın değişiklik tam olarak neydi?",
+"type": "free_text",
+"next": "verification"
+},
+"verification": {
+"question": "Yaptığın değişikliği nasıl doğruladın? Çıktıları nelerdir?",
+"type": "free_text",
+"next": "end"
+},
+"initial": {
+"question": "Bu sadece ilk dokümantasyon aktarımı olarak kaydedildi.",
+"type": "end"
+},
+"improvement": {
+"question": "Bu değişiklik bir iyileştirme olarak sınıflandırıldı.",
+"type": "end"
+},
+"proposed_change": {
+"question": "Önerilen değişiklik kayda alındı. Detaylı etki analizi yapılacak.",
+"type": "end"
+},
+"end": {
+"question": "Teşekkürler. Değişiklik önerisi kaydedildi.",
+"type": "end"
+}
+}
