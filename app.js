@@ -1,150 +1,52 @@
-const messages = document.getElementById("messages");
+async function runAssistant() {
+  const apiKey = document.getElementById("apiKey").value.trim();
+  const userText = document.getElementById("userText").value.trim();
+  const resultDiv = document.getElementById("result");
 
-let state = {
-  mode: null, // "newDoc" | "improvement" | "nonconformity"
-  docNo: null,
-  docCode: null,
-  erpChecked: false
-};
-
-function addMessage(text, sender) {
-  const div = document.createElement("div");
-  div.className = "msg " + sender;
-  const span = document.createElement("span");
-  span.innerText = text;
-  div.appendChild(span);
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-}
-
-function sendMessage() {
-  const input = document.getElementById("userInput");
-  const text = input.value.trim();
-  if (!text) return;
-
-  addMessage(text, "user");
-  input.value = "";
-
-  setTimeout(() => {
-    analyze(text.toLowerCase());
-  }, 500);
-}
-
-function analyze(text) {
-  // 1) Henüz mod seçilmediyse, niyet algıla
-  if (!state.mode) {
-    if (text.includes("ilk") || text.includes("yeni doküman") || text.includes("ilk doküman") || text.includes("aktar")) {
-      state.mode = "newDoc";
-      addMessage(
-        "Anladım, bu bir **ilk doküman aktarımı** gibi duruyor.\n" +
-        "Doküman numarası ve doküman kodunu yazar mısın?",
-        "ai"
-      );
-      return;
-    }
-
-    const nonconformityHints = ["girmiyordu", "çalışmıyordu", "uymuyordu", "yanlıştı", "hata", "uygunsuz"];
-    const improvementHints = ["sadeleştirildi", "iyileştirildi", "optimize", "verim", "okunabilirlik", "iyileştirme"];
-
-    let hasNonconformity = nonconformityHints.some(k => text.includes(k));
-    let hasImprovement = improvementHints.some(k => text.includes(k));
-
-    if (hasNonconformity) {
-      state.mode = "nonconformity";
-      addMessage(
-        "Yazdıklarına bakınca burada bir **uygunsuzluk** giderme durumu var gibi görünüyor.\n" +
-        "Kısaca: hangi hatayı, nasıl giderdiğini anlatır mısın?",
-        "ai"
-      );
-      return;
-    }
-
-    if (hasImprovement) {
-      state.mode = "improvement";
-      addMessage(
-        "Bu bir **iyileştirme** gibi duruyor 👍\n" +
-        "Neyi, nasıl iyileştirdiğini biraz daha net yazar mısın?",
-        "ai"
-      );
-      return;
-    }
-
-    addMessage(
-      "Tam net anlayamadım 🙂\n" +
-      "Yeni bir doküman mı aktarıyorsun, yoksa mevcut bir şeyde iyileştirme / hata giderme mi var?",
-      "ai"
-    );
+  if (!apiKey || !userText) {
+    resultDiv.innerText = "Lütfen API Key ve açıklamayı gir.";
     return;
   }
 
-  // 2) İlk doküman aktarımı akışı
-  if (state.mode === "newDoc") {
-    if (!state.docNo || !state.docCode) {
-      const parts = text.split(" ");
-      if (parts.length >= 2) {
-        state.docNo = parts[0];
-        state.docCode = parts[1];
-        addMessage("Bir bakıyorum, sistemde kayıtlı mı kontrol ediyorum...", "ai");
+  resultDiv.innerText = "Yazıyorum...";
 
-        setTimeout(() => {
-          state.erpChecked = true;
-          addMessage(
-            "Sistemde bu doküman kayıtlı görünmüyor.\n" +
-            "İlk aktarım için uygun. Doküman linkini paylaşabilir misin?",
-            "ai"
-          );
-        }, 800);
-      } else {
-        addMessage("Doküman numarası ve doküman kodunu birlikte yazar mısın? (örn: 12345 ABC-01)", "ai");
-      }
-      return;
-    }
+  const prompt = `
+Kullanıcının değişiklik açıklamasını yorumla.
 
-    if (state.erpChecked) {
-      addMessage(
-        "Teşekkürler. Doküman aktarım talebini bu bilgilerle kaydediyorum 👍",
-        "ai"
-      );
-      resetState();
-      return;
-    }
+Şunları yap:
+- Bunun "ilk doküman aktarımı" mı,
+- Bir "iyileştirme" mi,
+- Yoksa bir "uygunsuzluk giderme" mi olduğunu yorumla.
+- Eğer açıklama yetersizse, kullanıcıya kısa ve insani bir itiraz yaz.
+- Gereksiz uzatma, klavyede yazıyormuş gibi konuş.
+
+Kullanıcı açıklaması:
+"${userText}"
+`;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        messages: [
+          { role: "system", content: "Sen bir değişiklik talebi asistanısın." },
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.4
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.choices[0].message.content;
+
+    resultDiv.innerText = reply;
+
+  } catch (err) {
+    resultDiv.innerText = "Bir hata oldu: " + err.message;
   }
-
-  // 3) İyileştirme / uygunsuzluk detayları
-  if (state.mode === "improvement") {
-    if (text.length < 15) {
-      addMessage("Biraz kısa kaldı gibi 🙂 Neyi ve nasıl iyileştirdiğini kısaca açar mısın?", "ai");
-      return;
-    }
-    addMessage(
-      "Tamam, anlattıklarına göre bu bir iyileştirme.\n" +
-      "Bu şekilde kaydediyorum. Teşekkürler 👍",
-      "ai"
-    );
-    resetState();
-    return;
-  }
-
-  if (state.mode === "nonconformity") {
-    if (text.length < 15) {
-      addMessage("Hangi hatayı, nasıl giderdiğini biraz daha netleştirir misin?", "ai");
-      return;
-    }
-    addMessage(
-      "Anladım, bu bir uygunsuzluk giderme talebi.\n" +
-      "Bu bilgilerle kaydediyorum. Teşekkürler 👍",
-      "ai"
-    );
-    resetState();
-    return;
-  }
-}
-
-function resetState() {
-  state = {
-    mode: null,
-    docNo: null,
-    docCode: null,
-    erpChecked: false
-  };
 }
