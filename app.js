@@ -1,60 +1,32 @@
-let flow = {};
-let currentNode = "start"
+function checkDoc() {
+  const docNo = document.getElementById("docNo").value.trim();
+  const docCode = document.getElementById("docCode").value.trim();
+  const msg = document.getElementById("msg");
+  const step2 = document.getElementById("step2");
 
-const messagesDiv = document.getElementById("messages");
-const inputArea = document.getElementById("inputArea");
+  if (!docNo || !docCode) {
+    msg.innerText = "❌ Lütfen doküman numarası ve doküman kodunu giriniz.";
+    msg.className = "msg error";
+    return;
+  }
 
-fetch("flow.json")
-.then(res => res.json())
-.then(data => {
-flow = data;
-showNode(currentNode);
-});
+  // ERP kontrolü simülasyonu
+  msg.innerText = "🔎 ERP sisteminde kontrol ediliyor...\n❌ Bu doküman sistemde kayıtlı değildir.\n✅ İlk aktarım uygundur.";
+  msg.className = "msg ok";
 
-function showNode(nodeKey) {
-inputArea.innerHTML = ""
-const node = flow[nodeKey];
-
-addBotMessage(node.question);
-
-if (node.options) {
-const div = document.createElement("div");
-div.className = "options"
-Object.keys(node.options).forEach(option => {
-const btn = document.createElement("button");
-btn.textContent = option;
-btn.onclick = () => {
-addUserMessage(option);
-currentNode = node.options[option];
-showNode(currentNode);
-};
-div.appendChild(btn);
-});
-inputArea.appendChild(div);
-} else if (node.type === "free_text") {
-const textarea = document.createElement("textarea");
-const btn = document.createElement("button");
-btn.textContent = "Gönder"
-btn.onclick = () => {
-addUserMessage(textarea.value);
-currentNode = node.next;
-showNode(currentNode);
-};
-inputArea.appendChild(textarea);
-inputArea.appendChild(btn);
-}
+  step2.style.display = "block";
 }
 
-function addBotMessage(text) {
-const div = document.createElement("div");
-div.className = "bot"
-div.textContent = "YZ: " + text;
-messagesDiv.appendChild(div);
-}
+function submitDoc() {
+  const docLink = document.getElementById("docLink").value.trim();
+  const msg = document.getElementById("msg");
 
-function addUserMessage(text) {
-const div = document.createElement("div");
-div.className = "user"
-div.textContent = "Sen: " + text;
-messagesDiv.appendChild(div);
+  if (!docLink) {
+    msg.innerText = "❌ Lütfen aktarılacak doküman için bir link giriniz.";
+    msg.className = "msg error";
+    return;
+  }
+
+  msg.innerText = "✅ Doküman linki alındı. Değişiklik talebi 'Yeni Doküman Aktarımı' olarak kaydedildi.";
+  msg.className = "msg ok";
 }
