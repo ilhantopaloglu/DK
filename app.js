@@ -7,11 +7,15 @@ function checkDoc() {
   if (!docNo || !docCode) {
     msg.innerText = "❌ Lütfen doküman numarası ve doküman kodunu giriniz.";
     msg.className = "msg error";
+    step2.style.display = "none";
     return;
   }
 
   // ERP kontrolü simülasyonu
-  msg.innerText = "🔎 ERP sisteminde kontrol ediliyor...\n❌ Bu doküman sistemde kayıtlı değildir.\n✅ İlk aktarım uygundur.";
+  msg.innerText =
+    "🔎 ERP sisteminde kontrol ediliyor...\n" +
+    "❌ Bu doküman sistemde kayıtlı değildir.\n" +
+    "✅ İlk aktarım uygundur. Lütfen doküman linkini giriniz.";
   msg.className = "msg ok";
 
   step2.style.display = "block";
@@ -27,6 +31,8 @@ function submitDoc() {
     return;
   }
 
-  msg.innerText = "✅ Doküman linki alındı. Değişiklik talebi 'Yeni Doküman Aktarımı' olarak kaydedildi.";
+  msg.innerText =
+    "✅ Doküman linki alındı.\n" +
+    "Değişiklik talebi 'Yeni Doküman Aktarımı' olarak kaydedildi.";
   msg.className = "msg ok";
 }
