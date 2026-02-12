@@ -11,6 +11,11 @@ function addMessage(text, sender) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+function isQuestion(text) {
+  const t = text.toLowerCase();
+  return t.includes("nedir") || t.includes("ne demek") || t.includes("fark") || t.endsWith("?");
+}
+
 function analyzeIntent(text) {
   const t = text.toLowerCase();
 
@@ -27,6 +32,24 @@ function analyzeIntent(text) {
   return "belirsiz";
 }
 
+function answerKnowledge(text) {
+  const t = text.toLowerCase();
+
+  if (t.includes("iyileştirme") && t.includes("uygunsuzluk") && t.includes("fark")) {
+    addMessage(
+      "Güzel soru 👍 Kısaca özetleyeyim:\n\n" +
+      "• İyileştirme: Üründe bir hata yokken, performansı, kullanılabilirliği veya kalitesini artırmaya yönelik yapılan değişikliktir.\n" +
+      "• Uygunsuzluk giderme: Var olan bir hata, kusur veya standarda aykırı durumun düzeltilmesidir.\n\n" +
+      "Pratikte ikisi sık karışır; bu yüzden değişiklik talebinde niyetin net olması önemli.",
+      "ai"
+    );
+    return true;
+  }
+
+  addMessage("Bu soru bir değişiklik talebi gibi durmuyor, daha çok bilgi alma amaçlı. Biraz daha açarsan anlatmaya çalışayım 🙂", "ai");
+  return true;
+}
+
 function send() {
   const input = document.getElementById("userInput");
   const text = input.value.trim();
@@ -35,10 +58,16 @@ function send() {
   addMessage(text, "user");
   input.value = "";
 
-  setTimeout(() => respond(text), 500);
+  setTimeout(() => respond(text), 400);
 }
 
 function respond(text) {
+  // Bilgi sorusuysa önce ona cevap ver
+  if (isQuestion(text)) {
+    const handled = answerKnowledge(text);
+    if (handled) return;
+  }
+
   if (!state.mode) {
     const intent = analyzeIntent(text);
     state.mode = intent;
@@ -62,9 +91,8 @@ function respond(text) {
     return;
   }
 
-  // Devam soruları
   if (state.mode === "iyilestirme") {
-    addMessage("Teşekkürler. Peki bu iyileştirme ölçülebilir mi? (örn: süre kısaldı, performans arttı vs.) Ayrıca değişiklik öncesi/sonrası etkisini nasıl doğruladın?", "ai");
+    addMessage("Teşekkürler. Peki bu iyileştirme ölçülebilir mi? Öncesi/sonrası etkisini nasıl doğruladın?", "ai");
     return;
   }
 
@@ -79,5 +107,4 @@ function respond(text) {
   }
 }
 
-// İlk karşılama mesajı
-addMessage("Merhaba! Bir doküman aktarımı ya da güncelleme talebi oluşturmak istiyorsan kısaca anlat, ben sana doğru soruları sorayım.", "ai");
+addMessage("Merhaba! Doküman aktarımı / güncelleme talebi oluşturabilirsin ya da bir şey sorabilirsin.", "ai");
