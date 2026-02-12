@@ -1,66 +1,62 @@
-function onTypeChange() {
-  const type = document.getElementById("requestType").value;
-  document.getElementById("newDocArea").classList.add("hidden");
-  document.getElementById("descArea").classList.add("hidden");
+const messages = document.getElementById("messages");
 
-  if (type === "newDoc") {
-    document.getElementById("newDocArea").classList.remove("hidden");
-  } else if (type === "improvement" || type === "nonconformity") {
-    document.getElementById("descArea").classList.remove("hidden");
-  }
+function addMessage(text, sender) {
+  const div = document.createElement("div");
+  div.className = "msg " + sender;
+  const span = document.createElement("span");
+  span.innerText = text;
+  div.appendChild(span);
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 }
 
-function checkERP() {
-  const docNo = document.getElementById("docNo").value.trim();
-  const docCode = document.getElementById("docCode").value.trim();
-  const result = document.getElementById("erpResult");
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return;
 
-  if (!docNo || !docCode) {
-    result.innerText = "Doküman numarası ve kodunu girmen lazım 🙂";
-    return;
-  }
-
-  result.innerText = "Bir bakıyorum...";
+  addMessage(text, "user");
+  input.value = "";
 
   setTimeout(() => {
-    result.innerText =
-      "Sistemde bu doküman kayıtlı görünmüyor. İlk aktarım için uygun.\n\nLütfen doküman linkini paylaş.";
-  }, 800);
+    analyze(text.toLowerCase());
+  }, 600);
 }
 
-function analyze() {
-  const text = document.getElementById("description").value.toLowerCase();
-  const response = document.getElementById("aiResponse");
-
-  if (text.length < 10) {
-    response.innerText =
-      "Biraz kısa kaldı gibi 🙂 Neyi, nasıl değiştirdiğini kısaca yazar mısın?";
-    return;
-  }
-
+function analyze(text) {
   const nonconformityHints = ["girmiyordu", "çalışmıyordu", "uymuyordu", "yanlıştı", "hata", "uygunsuz"];
   const improvementHints = ["sadeleştirildi", "iyileştirildi", "optimize", "verim", "okunabilirlik"];
 
   let hasNonconformity = nonconformityHints.some(k => text.includes(k));
   let hasImprovement = improvementHints.some(k => text.includes(k));
 
+  if (text.length < 10) {
+    addMessage("Biraz kısa kaldı gibi 🙂 Neyi, nasıl değiştirdiğini kısaca yazar mısın?", "ai");
+    return;
+  }
+
   if (hasNonconformity) {
-    response.innerText =
-      "Şöyle anlıyorum: başlangıçta bir sorun varmış gibi duruyor.\n" +
-      "Bu talebi “uygunsuzluk giderme” olarak değerlendirmek daha uygun gözüküyor.\n\n" +
-      "Eğer farklı düşünüyorsan, biraz daha detay verir misin?";
+    addMessage(
+      "Yazdıklarına bakınca başlangıçta bir sorun varmış gibi duruyor.\n" +
+      "Bu talebi “uygunsuzluk giderme” olarak değerlendirmek daha uygun gözüküyor.\n" +
+      "Eğer farklı düşünüyorsan biraz daha açar mısın?",
+      "ai"
+    );
     return;
   }
 
   if (hasImprovement) {
-    response.innerText =
-      "Anladığım kadarıyla mevcut durumda bir hata yok, süreci/ürünü daha iyi hale getirmişsin 👍\n" +
-      "Bunu iyileştirme olarak değerlendirmek uygun görünüyor.";
+    addMessage(
+      "Anladığım kadarıyla mevcut durumda bir hata yok, yapılan değişiklik süreci/ürünü daha iyi hale getirmiş 👍\n" +
+      "Bunu iyileştirme olarak değerlendirmek uygun görünüyor.",
+      "ai"
+    );
     return;
   }
 
-  response.innerText =
-    "Biraz daha netleştirelim mi? 🙂\n" +
-    "Bu değişiklik bir hatayı mı gideriyor, yoksa çalışan bir şeyi daha mı iyi hale getiriyor?\n" +
-    "Kısaca neyi, nasıl değiştirdiğini yazarsan daha doğru yönlendirebilirim.";
+  addMessage(
+    "Tam netleşmedi 🙂 Bu değişiklik bir hatayı mı gideriyor, yoksa çalışan bir şeyi daha mı iyi hale getiriyor?\n" +
+    "Kısaca neyi, nasıl değiştirdiğini yazarsan doğru yönlendirebilirim.",
+    "ai"
+  );
 }
