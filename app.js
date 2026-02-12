@@ -1,118 +1,93 @@
 const messages = document.getElementById("messages");
+const input = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
-const userInput = document.getElementById("userInput");
 
-let state = { mode: null };
+let flowData = null;
+let waitingForDetail = false;
+let currentIntent = null;
 
-function addBubble(text, sender) {
+fetch("flow.json")
+  .then(res => res.json())
+  .then(data => flowData = data);
+
+function addMessage(text, sender) {
   const div = document.createElement("div");
-  div.className = "bubble " + sender;
+  div.className = sender;
   div.innerText = text;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
 
-function isKnowledgeQuestion(text) {
-  const t = text.toLowerCase();
-  return (
-    t.includes("fark") ||
-    t.includes("arasındaki fark") ||
-    t.includes("fark ne") ||
-    t.includes("farkı ne") ||
-    t.includes("nedir") ||
-    t.includes("ne demek")
-  );
+function aiTyping(text) {
+  let i = 0;
+  const div = document.createElement("div");
+  div.className = "ai";
+  messages.appendChild(div);
+
+  const interval = setInterval(() => {
+    div.innerText += text.charAt(i);
+    i++;
+    if (i >= text.length) clearInterval(interval);
+    messages.scrollTop = messages.scrollHeight;
+  }, 20);
 }
 
-function analyzeIntent(text) {
-  const t = text.toLowerCase();
-
-  if (t.includes("ilk") || t.includes("ilk defa") || t.includes("ilk kez") || t.includes("ilk doküman")) {
-    return "ilk_aktarim";
+function detectIntent(text) {
+  text = text.toLowerCase();
+  for (const intent of flowData.intents) {
+    for (const kw of intent.keywords) {
+      if (text.includes(kw)) return intent.name;
+    }
   }
-  if (t.includes("hata") || t.includes("uygunsuz") || t.includes("bozuk") || t.includes("girmiyordu") || t.includes("çalışmıyordu")) {
-    return "uygunsuzluk";
-  }
-  if (t.includes("iyileştir") || t.includes("iyilestir") || t.includes("geliştir") || t.includes("optimiz") || t.includes("daha iyi")) {
-    return "iyilestirme";
-  }
-  return "belirsiz";
+  return null;
 }
 
-function answerKnowledge(text) {
-  const t = text.toLowerCase();
+function aiRespond(userText) {
+  if (!currentIntent) {
+    const intent = detectIntent(userText);
 
-  if ((t.includes("iyileştirme") || t.includes("iyilestirme")) && (t.includes("hata") || t.includes("uygunsuz")) && t.includes("fark")) {
-    addBubble(
-      "Kısaca özetleyeyim:\n\n" +
-      "• İyileştirme: Üründe bir hata yokken kaliteyi, performansı veya kullanılabilirliği artırmak.\n" +
-      "• Uygunsuzluk giderme: Var olan bir hatayı veya standarda aykırı durumu düzeltmek.\n\n" +
-      "Pratikte ikisi sık karışır; bu yüzden değişiklik talebinde niyetin net yazılması önemli.",
-      "ai"
-    );
-    return true;
-  }
-
-  addBubble("Bu daha çok bilgi alma amaçlı bir soru gibi duruyor. Biraz daha açarsan örnekle anlatabilirim.", "ai");
-  return true;
-}
-
-function respond(text) {
-  if (isKnowledgeQuestion(text)) {
-    answerKnowledge(text);
-    return;
-  }
-
-  if (!state.mode) {
-    const intent = analyzeIntent(text);
-    state.mode = intent;
-
-    if (intent === "ilk_aktarim") {
-      addBubble("Bu bir ilk doküman aktarımı gibi görünüyor. Doküman numarasını ve kodunu yazar mısın?", "ai");
+    if (!intent) {
+      aiTyping("Bunu bir değişiklik talebi olarak yorumlayamadım 🤔\nDoküman ilk aktarımı mı yapıyorsun, yoksa bir iyileştirme ya da hata giderme mi?");
       return;
     }
+
+    currentIntent = intent;
+
+    if (intent === "ilk_dokuman") {
+      aiTyping("Anladım 👍 İlk doküman aktarımı yapıyorsun.\nHangi ürün için ve hangi dokümanı aktarıyorsun?");
+    }
+
     if (intent === "iyilestirme") {
-      addBubble("Bu bir iyileştirme gibi duruyor. Neyi nasıl iyileştirdin? Öncesi ve sonrası neydi?", "ai");
-      return;
-    }
-    if (intent === "uygunsuzluk") {
-      addBubble("Bu bir uygunsuzluk/hata giderme gibi görünüyor. İlk hatayı hangi üründe, hangi aşamada gördün?", "ai");
-      return;
+      aiTyping("Tamam, bu bir iyileştirme gibi duruyor.\nNeyi nasıl iyileştirdin? Öncesi ve sonrası kısaca anlatır mısın?");
     }
 
-    addBubble("Tam anlayamadım 🙂 Bu ilk doküman aktarımı mı, iyileştirme mi yoksa bir hata giderme mi?", "ai");
+    if (intent === "hata") {
+      aiTyping("Bu bir hata giderme gibi duruyor.\nHata hangi üründe, hangi aşamada ortaya çıktı? Nasıl çözdün?");
+    }
+
+    waitingForDetail = true;
     return;
   }
 
-  if (state.mode === "iyilestirme") {
-    addBubble("Bu iyileştirmenin etkisini nasıl doğruladın? Ölçülebilir bir kazanım var mı?", "ai");
-    return;
-  }
-
-  if (state.mode === "uygunsuzluk") {
-    addBubble("Bu hata başka hangi ürünleri etkileyebilir? Değişikliği nasıl doğruladın?", "ai");
-    return;
-  }
-
-  if (state.mode === "ilk_aktarim") {
-    addBubble("Anladım. ERP’de yok varsayıyorum. Lütfen doküman linkini paylaş.", "ai");
+  if (waitingForDetail) {
+    aiTyping("Teşekkürler 🙌\nBu bilgilerle değişiklik talebini anlamlı şekilde oluşturabilirim. İstersen gönderip kaydedebilirsin.");
+    waitingForDetail = false;
     return;
   }
 }
 
 sendBtn.addEventListener("click", () => {
-  const text = userInput.value.trim();
+  const text = input.value.trim();
   if (!text) return;
 
-  addBubble(text, "user");
-  userInput.value = "";
-  setTimeout(() => respond(text), 300);
+  addMessage(text, "user");
+  input.value = "";
+
+  setTimeout(() => {
+    aiRespond(text);
+  }, 400);
 });
 
-userInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    sendBtn.click();
-  }
-});
-
-addBubble("Merhaba 👋 Doküman aktarımı/güncelleme talebi yazabilirsin ya da bir şey sorabilirsin.", "ai");
+window.onload = () => {
+  aiTyping("Merhaba 👋 Doküman aktarım/güncelleme talebi yazabilirsin ya da bir şey sorabilirsin.");
+};
