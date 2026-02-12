@@ -2,26 +2,28 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>Değişiklik Talebi - Akıllı Asistan</title>
+  <title>Doküman Aktarım ve Güncelleme Asistanı</title>
   <style>
     body { font-family: Arial, sans-serif; background:#f5f7fa; padding:20px; }
-    .chatbox { max-width:800px; margin:auto; background:#fff; border-radius:8px; padding:20px; }
-    .messages { height:400px; overflow-y:auto; border:1px solid #ddd; padding:10px; border-radius:5px; background:#fafafa; }
+    .chatbox { max-width:900px; margin:auto; background:#fff; border-radius:8px; padding:20px; }
+    h2 { margin-top:0; }
+    .messages { height:420px; overflow-y:auto; border:1px solid #ddd; padding:10px; border-radius:6px; background:#fafafa; }
     .msg { margin-bottom:10px; }
     .user { text-align:right; }
-    .user span { background:#2563eb; color:white; padding:8px 12px; border-radius:12px; display:inline-block; }
-    .ai span { background:#e5e7eb; padding:8px 12px; border-radius:12px; display:inline-block; }
+    .user span { background:#2563eb; color:white; padding:8px 12px; border-radius:14px; display:inline-block; }
+    .ai span { background:#e5e7eb; padding:8px 12px; border-radius:14px; display:inline-block; }
     .input-area { display:flex; margin-top:10px; gap:10px; }
-    input { flex:1; padding:10px; border-radius:5px; border:1px solid #ccc; }
-    button { padding:10px 15px; border:none; border-radius:5px; background:#2563eb; color:white; cursor:pointer; }
+    input { flex:1; padding:10px; border-radius:6px; border:1px solid #ccc; }
+    button { padding:10px 16px; border:none; border-radius:6px; background:#2563eb; color:white; cursor:pointer; }
+    button:hover { background:#1d4ed8; }
   </style>
 </head>
 <body>
   <div class="chatbox">
-    <h2>Değişiklik Talebi Asistanı</h2>
+    <h2>Doküman Aktarım ve Güncelleme Asistanı</h2>
     <div id="messages" class="messages"></div>
     <div class="input-area">
-      <input id="userInput" placeholder="Değişiklik talebini kısaca yaz..." />
+      <input id="userInput" placeholder="Kısaca ne yapmak istediğini yaz..." />
       <button onclick="sendMessage()">Gönder</button>
     </div>
   </div>
