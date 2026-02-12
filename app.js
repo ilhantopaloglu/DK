@@ -1,5 +1,12 @@
 const messages = document.getElementById("messages");
 
+let state = {
+  mode: null, // "newDoc" | "improvement" | "nonconformity"
+  docNo: null,
+  docCode: null,
+  erpChecked: false
+};
+
 function addMessage(text, sender) {
   const div = document.createElement("div");
   div.className = "msg " + sender;
@@ -20,43 +27,124 @@ function sendMessage() {
 
   setTimeout(() => {
     analyze(text.toLowerCase());
-  }, 600);
+  }, 500);
 }
 
 function analyze(text) {
-  const nonconformityHints = ["girmiyordu", "çalışmıyordu", "uymuyordu", "yanlıştı", "hata", "uygunsuz"];
-  const improvementHints = ["sadeleştirildi", "iyileştirildi", "optimize", "verim", "okunabilirlik"];
+  // 1) Henüz mod seçilmediyse, niyet algıla
+  if (!state.mode) {
+    if (text.includes("ilk") || text.includes("yeni doküman") || text.includes("ilk doküman") || text.includes("aktar")) {
+      state.mode = "newDoc";
+      addMessage(
+        "Anladım, bu bir **ilk doküman aktarımı** gibi duruyor.\n" +
+        "Doküman numarası ve doküman kodunu yazar mısın?",
+        "ai"
+      );
+      return;
+    }
 
-  let hasNonconformity = nonconformityHints.some(k => text.includes(k));
-  let hasImprovement = improvementHints.some(k => text.includes(k));
+    const nonconformityHints = ["girmiyordu", "çalışmıyordu", "uymuyordu", "yanlıştı", "hata", "uygunsuz"];
+    const improvementHints = ["sadeleştirildi", "iyileştirildi", "optimize", "verim", "okunabilirlik", "iyileştirme"];
 
-  if (text.length < 10) {
-    addMessage("Biraz kısa kaldı gibi 🙂 Neyi, nasıl değiştirdiğini kısaca yazar mısın?", "ai");
-    return;
-  }
+    let hasNonconformity = nonconformityHints.some(k => text.includes(k));
+    let hasImprovement = improvementHints.some(k => text.includes(k));
 
-  if (hasNonconformity) {
+    if (hasNonconformity) {
+      state.mode = "nonconformity";
+      addMessage(
+        "Yazdıklarına bakınca burada bir **uygunsuzluk** giderme durumu var gibi görünüyor.\n" +
+        "Kısaca: hangi hatayı, nasıl giderdiğini anlatır mısın?",
+        "ai"
+      );
+      return;
+    }
+
+    if (hasImprovement) {
+      state.mode = "improvement";
+      addMessage(
+        "Bu bir **iyileştirme** gibi duruyor 👍\n" +
+        "Neyi, nasıl iyileştirdiğini biraz daha net yazar mısın?",
+        "ai"
+      );
+      return;
+    }
+
     addMessage(
-      "Yazdıklarına bakınca başlangıçta bir sorun varmış gibi duruyor.\n" +
-      "Bu talebi “uygunsuzluk giderme” olarak değerlendirmek daha uygun gözüküyor.\n" +
-      "Eğer farklı düşünüyorsan biraz daha açar mısın?",
+      "Tam net anlayamadım 🙂\n" +
+      "Yeni bir doküman mı aktarıyorsun, yoksa mevcut bir şeyde iyileştirme / hata giderme mi var?",
       "ai"
     );
     return;
   }
 
-  if (hasImprovement) {
+  // 2) İlk doküman aktarımı akışı
+  if (state.mode === "newDoc") {
+    if (!state.docNo || !state.docCode) {
+      const parts = text.split(" ");
+      if (parts.length >= 2) {
+        state.docNo = parts[0];
+        state.docCode = parts[1];
+        addMessage("Bir bakıyorum, sistemde kayıtlı mı kontrol ediyorum...", "ai");
+
+        setTimeout(() => {
+          state.erpChecked = true;
+          addMessage(
+            "Sistemde bu doküman kayıtlı görünmüyor.\n" +
+            "İlk aktarım için uygun. Doküman linkini paylaşabilir misin?",
+            "ai"
+          );
+        }, 800);
+      } else {
+        addMessage("Doküman numarası ve doküman kodunu birlikte yazar mısın? (örn: 12345 ABC-01)", "ai");
+      }
+      return;
+    }
+
+    if (state.erpChecked) {
+      addMessage(
+        "Teşekkürler. Doküman aktarım talebini bu bilgilerle kaydediyorum 👍",
+        "ai"
+      );
+      resetState();
+      return;
+    }
+  }
+
+  // 3) İyileştirme / uygunsuzluk detayları
+  if (state.mode === "improvement") {
+    if (text.length < 15) {
+      addMessage("Biraz kısa kaldı gibi 🙂 Neyi ve nasıl iyileştirdiğini kısaca açar mısın?", "ai");
+      return;
+    }
     addMessage(
-      "Anladığım kadarıyla mevcut durumda bir hata yok, yapılan değişiklik süreci/ürünü daha iyi hale getirmiş 👍\n" +
-      "Bunu iyileştirme olarak değerlendirmek uygun görünüyor.",
+      "Tamam, anlattıklarına göre bu bir iyileştirme.\n" +
+      "Bu şekilde kaydediyorum. Teşekkürler 👍",
       "ai"
     );
+    resetState();
     return;
   }
 
-  addMessage(
-    "Tam netleşmedi 🙂 Bu değişiklik bir hatayı mı gideriyor, yoksa çalışan bir şeyi daha mı iyi hale getiriyor?\n" +
-    "Kısaca neyi, nasıl değiştirdiğini yazarsan doğru yönlendirebilirim.",
-    "ai"
-  );
+  if (state.mode === "nonconformity") {
+    if (text.length < 15) {
+      addMessage("Hangi hatayı, nasıl giderdiğini biraz daha netleştirir misin?", "ai");
+      return;
+    }
+    addMessage(
+      "Anladım, bu bir uygunsuzluk giderme talebi.\n" +
+      "Bu bilgilerle kaydediyorum. Teşekkürler 👍",
+      "ai"
+    );
+    resetState();
+    return;
+  }
+}
+
+function resetState() {
+  state = {
+    mode: null,
+    docNo: null,
+    docCode: null,
+    erpChecked: false
+  };
 }
