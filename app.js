@@ -1,8 +1,8 @@
 const messages = document.getElementById("messages");
+const sendBtn = document.getElementById("sendBtn");
+const userInput = document.getElementById("userInput");
 
-let state = {
-  mode: null
-};
+let state = { mode: null };
 
 function addBubble(text, sender) {
   const div = document.createElement("div");
@@ -33,7 +33,7 @@ function analyzeIntent(text) {
   if (t.includes("hata") || t.includes("uygunsuz") || t.includes("bozuk") || t.includes("girmiyordu") || t.includes("çalışmıyordu")) {
     return "uygunsuzluk";
   }
-  if (t.includes("iyileştir") || t.includes("geliştir") || t.includes("optimiz") || t.includes("daha iyi")) {
+  if (t.includes("iyileştir") || t.includes("iyilestir") || t.includes("geliştir") || t.includes("optimiz") || t.includes("daha iyi")) {
     return "iyilestirme";
   }
   return "belirsiz";
@@ -42,30 +42,19 @@ function analyzeIntent(text) {
 function answerKnowledge(text) {
   const t = text.toLowerCase();
 
-  if ((t.includes("iyileştirme") || t.includes("iyilestirme")) && (t.includes("hata") || t.includes("uygunsuzluk")) && t.includes("fark")) {
+  if ((t.includes("iyileştirme") || t.includes("iyilestirme")) && (t.includes("hata") || t.includes("uygunsuz")) && t.includes("fark")) {
     addBubble(
-      "Kısaca anlatayım:\n\n" +
-      "• İyileştirme: Üründe bir hata yokken daha iyi hale getirmek.\n" +
+      "Kısaca özetleyeyim:\n\n" +
+      "• İyileştirme: Üründe bir hata yokken kaliteyi, performansı veya kullanılabilirliği artırmak.\n" +
       "• Uygunsuzluk giderme: Var olan bir hatayı veya standarda aykırı durumu düzeltmek.\n\n" +
-      "Pratikte ikisi sık karışır. O yüzden değişiklik talebinde niyetin net yazılması önemli.",
+      "Pratikte ikisi sık karışır; bu yüzden değişiklik talebinde niyetin net yazılması önemli.",
       "ai"
     );
     return true;
   }
 
-  addBubble("Bu daha çok bilgi alma amaçlı bir soru gibi duruyor. İstersen biraz daha detay verirsen örnekle anlatayım.", "ai");
+  addBubble("Bu daha çok bilgi alma amaçlı bir soru gibi duruyor. Biraz daha açarsan örnekle anlatabilirim.", "ai");
   return true;
-}
-
-function send() {
-  const input = document.getElementById("userInput");
-  const text = input.value.trim();
-  if (!text) return;
-
-  addBubble(text, "user");
-  input.value = "";
-
-  setTimeout(() => respond(text), 300);
 }
 
 function respond(text) {
@@ -111,4 +100,19 @@ function respond(text) {
   }
 }
 
-addBubble("Merhaba 👋 Doküman aktarımı/güncelleme talebi yazabilirsin ya da kavramsal bir soru sorabilirsin.", "ai");
+sendBtn.addEventListener("click", () => {
+  const text = userInput.value.trim();
+  if (!text) return;
+
+  addBubble(text, "user");
+  userInput.value = "";
+  setTimeout(() => respond(text), 300);
+});
+
+userInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    sendBtn.click();
+  }
+});
+
+addBubble("Merhaba 👋 Doküman aktarımı/güncelleme talebi yazabilirsin ya da bir şey sorabilirsin.", "ai");
