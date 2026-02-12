@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <title>Değişiklik Talebi – Yeni Doküman Aktarımı</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
     .field { margin-bottom: 12px; }
-    input { padding: 6px; width: 300px; }
-    button { padding: 8px 14px; cursor: pointer; }
-    .msg { margin-top: 15px; }
+    input { padding: 8px; width: 320px; }
+    button { padding: 8px 16px; cursor: pointer; }
+    .msg { margin-top: 15px; white-space: pre-line; }
     .error { color: #b00020; }
     .ok { color: #0a7a0a; }
   </style>
 </head>
 <body>
 
-  <h2>Yeni Doküman Aktarımı</h2>
+  <h2>Değişiklik Talebi – Yeni Doküman Aktarımı</h2>
 
   <div class="field">
     <label>Doküman Numarası:</label><br/>
@@ -29,7 +30,7 @@
 
   <button onclick="checkDoc()">Kontrol Et</button>
 
-  <div id="step2" style="display:none;">
+  <div id="step2" style="display:none; margin-top: 20px;">
     <div class="field">
       <label>Doküman Linki:</label><br/>
       <input id="docLink" placeholder="https://..." />
