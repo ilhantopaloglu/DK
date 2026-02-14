@@ -1,19 +1,10 @@
 {
-  "intents": [
-    {
-      "name": "ilk_dokuman",
-      "keywords": ["ilk doküman", "ilk aktarım", "doküman aktaracağım", "ilk defa"],
-      "next": "ilk_dokuman_soru"
-    },
-    {
-      "name": "iyilestirme",
-      "keywords": ["iyileştirme", "daha iyi", "geliştirme", "optimize"],
-      "next": "iyilestirme_soru"
-    },
-    {
-      "name": "hata",
-      "keywords": ["hata", "uygunsuzluk", "çalışmıyordu", "problem", "arıza"],
-      "next": "hata_soru"
-    }
-  ]
+"start": {
+"question": "Başlatmak istediğin değişiklikle ilgili ana sebep neydi?",
+"next": "reason_type"
+},
+"reason_type": {
+"question": "Bu değişiklik bir hata gidermeye mi, yoksa iyileştirmeye mi yönelik?",
+"options": ["hata", "iyileştirme"]
+}
 }
