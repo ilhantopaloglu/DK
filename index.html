@@ -1,78 +1,28 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Doküman Aktarım ve Güncelleme Asistanı</title>
-  <style>
-    body {
-      background: #0f172a;
-      color: white;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .chat {
-      width: 400px;
-      height: 600px;
-      background: #020617;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    #messages {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-    }
-    .user {
-      background: #2563eb;
-      padding: 8px;
-      border-radius: 8px;
-      margin: 6px 0;
-      align-self: flex-end;
-      max-width: 80%;
-    }
-    .ai {
-      background: #334155;
-      padding: 8px;
-      border-radius: 8px;
-      margin: 6px 0;
-      align-self: flex-start;
-      max-width: 80%;
-    }
-    .input-area {
-      display: flex;
-      padding: 10px;
-      gap: 6px;
-    }
-    input {
-      flex: 1;
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-    }
-    button {
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: none;
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Değişiklik Önerisi Asistanı</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 40px; }
+#chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+.user { color: blue; margin: 5px 0; }
+.bot { color: green; margin: 5px 0; }
+input, button { padding: 8px; margin-top: 10px; width: 100%; }
+</style>
 </head>
 <body>
-  <div class="chat">
-    <div id="messages"></div>
-    <div class="input-area">
-      <input id="userInput" placeholder="Bir şey yaz..." />
-      <button id="sendBtn">Gönder</button>
-    </div>
-  </div>
 
-  <script src="app.js"></script>
+<h2>Değişiklik Önerisi Asistanı</h2>
+
+<label>API Key:</label>
+<input type="password" id="apiKey" placeholder="API anahtarını gir" />
+
+<div id="chat"></div>
+
+<input type="text" id="userInput" placeholder="Mesajını yaz..." />
+<button onclick="sendMessage()">Gönder</button>
+
+<script src="app.js"></script>
 </body>
 </html>
