@@ -1,19 +1,20 @@
-console.log("app.js YÜKLENDİ");
-alert("app.js YÜKLENDİ");
-
-let API_KEY = null;
-
+// ---- DOM ELEMANLARI ----
 const apiKeyInput = document.getElementById("apiKeyInput");
 const checkApiBtn = document.getElementById("checkApiBtn");
 const apiStatus = document.getElementById("apiStatus");
 
-const sendBtn = document.getElementById("sendBtn");
-const messageInput = document.getElementById("messageInput");
 const chat = document.getElementById("chat");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
 
+// ---- DURUM ----
+let API_KEY = null;
+
+// ---- EVENTLER ----
 checkApiBtn.addEventListener("click", checkApiKey);
 sendBtn.addEventListener("click", sendMessage);
 
+// ---- FONKSİYONLAR ----
 async function checkApiKey() {
   const key = apiKeyInput.value.trim();
   if (!key) {
@@ -26,7 +27,6 @@ async function checkApiKey() {
   apiStatus.style.color = "gray";
 
   try {
-    // Basit bir test isteği
     const res = await fetch("https://api.openai.com/v1/models", {
       headers: {
         "Authorization": `Bearer ${key}`
@@ -34,27 +34,30 @@ async function checkApiKey() {
     });
 
     const data = await res.json();
-    console.log("API test sonucu:", data);
+    console.log("API CHECK RESPONSE:", data);
 
     if (data.error) {
+      API_KEY = null;
+      sendBtn.disabled = true;
       apiStatus.innerText = "❌ API anahtarı geçersiz.";
       apiStatus.style.color = "red";
-      sendBtn.disabled = true;
-      API_KEY = null;
+      appendMessage("error", "API Hatası: " + data.error.message);
       return;
     }
 
     API_KEY = key;
+    sendBtn.disabled = false;
     apiStatus.innerText = "✅ API uygun.";
     apiStatus.style.color = "green";
-    sendBtn.disabled = false;
+    appendMessage("bot", "API doğrulandı. Sohbete başlayabilirsin.");
 
   } catch (err) {
     console.error(err);
+    API_KEY = null;
+    sendBtn.disabled = true;
     apiStatus.innerText = "❌ API kontrol edilirken hata oluştu.";
     apiStatus.style.color = "red";
-    sendBtn.disabled = true;
-    API_KEY = null;
+    appendMessage("error", "Ağ hatası veya CORS engeli olabilir. Console’u kontrol et.");
   }
 }
 
@@ -75,24 +78,23 @@ async function sendMessage() {
       body: JSON.stringify({
         model: "gpt-4.1-mini",
         messages: [
-          { role: "system", content: "Sen bir konfigürasyon yönetimi asistanısın." },
+          { role: "system", content: "Sen konfigürasyon yönetimi konusunda yardımcı bir asistansın." },
           { role: "user", content: message }
         ]
       })
     });
 
     const data = await res.json();
-    console.log("RAW API RESPONSE:", data);
+    console.log("CHAT RESPONSE:", data);
 
     if (data.error) {
-      appendMessage("bot", "❌ API Hatası: " + data.error.message);
+      appendMessage("error", "API Hatası: " + data.error.message);
       return;
     }
 
     const reply = data.choices?.[0]?.message?.content;
-
     if (!reply) {
-      appendMessage("bot", "⚠️ Yanıt alınamadı. Console'u kontrol et.");
+      appendMessage("error", "Yanıt alınamadı. Console’u kontrol et.");
       return;
     }
 
@@ -100,14 +102,14 @@ async function sendMessage() {
 
   } catch (err) {
     console.error(err);
-    appendMessage("bot", "❌ Bir ağ hatası oluştu. Console'u kontrol et.");
+    appendMessage("error", "Ağ hatası oluştu (muhtemelen CORS). Console’u kontrol et.");
   }
 }
 
-function appendMessage(role, text) {
+function appendMessage(type, text) {
   const div = document.createElement("div");
-  div.className = role;
-  div.innerText = (role === "user" ? "Sen: " : "YZ: ") + text;
+  div.className = type;
+  div.innerText = (type === "user" ? "Sen: " : type === "bot" ? "YZ: " : "Hata: ") + text;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
