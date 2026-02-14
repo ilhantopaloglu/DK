@@ -1,40 +1,46 @@
-const chatDiv = document.getElementById("chat");
+// app.js
+const API_KEY = "BURAYA_GERCEK_ANAHTARI_YAZMA"; // sadece lokal testte
 
-function addMessage(text, sender) {
-const div = document.createElement("div");
-div.className = sender;
-div.innerText = text;
-chatDiv.appendChild(div);
-chatDiv.scrollTop = chatDiv.scrollHeight;
-}
+document.getElementById("sendBtn").addEventListener("click", sendMessage);
 
 async function sendMessage() {
-const input = document.getElementById("userInput");
-const apiKey = document.getElementById("apiKey").value;
+  const input = document.getElementById("messageInput");
+  const message = input.value.trim();
+  if (!message) return;
 
-const userText = input.value;
-if (!userText || !apiKey) return;
+  appendMessage("user", message);
+  input.value = "";
 
-addMessage("Sen: " + userText, "user");
-input.value = ""
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        messages: [{ role: "user", content: message }]
+      })
+    });
 
-const response = await fetch("https://api.openai.com/v1/chat/completions", {
-method: "POST",
-headers: {
-"Content-Type": "application/json",
-"Authorization": "Bearer " + apiKey
-},
-body: JSON.stringify({
-model: "gpt-4o-mini",
-messages: [
-{ role: "system", content: "Sen bir degisiklik onerisi asistanisin." },
-{ role: "user", content: userText }
-]
-})
-});
+    const data = await res.json();
+    console.log("API cevap:", data);
 
-const data = await response.json();
-const botText = data.choices[0].message.content;
+    const reply = data.choices?.[0]?.message?.content || "Yanıt alınamadı.";
+    appendMessage("bot", reply);
 
-addMessage("YZ: " + botText, "bot");
+  } catch (err) {
+    console.error("Hata:", err);
+    appendMessage("bot", "Bir hata oluştu. Console'u kontrol et.");
+  }
+}
+
+function appendMessage(role, text) {
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.className = role;
+  div.innerText = (role === "user" ? "Sen: " : "YZ: ") + text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 }
