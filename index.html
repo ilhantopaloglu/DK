@@ -1,28 +1,24 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<title>Değişiklik Önerisi Asistanı</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 40px; }
-#chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
-.user { color: blue; margin: 5px 0; }
-.bot { color: green; margin: 5px 0; }
-input, button { padding: 8px; margin-top: 10px; width: 100%; }
-</style>
+  <meta charset="UTF-8" />
+  <title>KY Akış Asistanı</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+    .user { color: #0a58ca; margin: 6px 0; }
+    .bot { color: #198754; margin: 6px 0; }
+  </style>
 </head>
 <body>
+  <h2>KY Akış Asistanı</h2>
 
-<h2>Değişiklik Önerisi Asistanı</h2>
+  <div id="chat"></div>
 
-<label>API Key:</label>
-<input type="password" id="apiKey" placeholder="API anahtarını gir" />
+  <input id="messageInput" placeholder="Mesajını yaz..." style="width:70%">
+  <button id="sendBtn">Gönder</button>
 
-<div id="chat"></div>
-
-<input type="text" id="userInput" placeholder="Mesajını yaz..." />
-<button onclick="sendMessage()">Gönder</button>
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
