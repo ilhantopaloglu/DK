@@ -6,7 +6,7 @@
   <style>
     body { 
       font-family: Arial, sans-serif; 
-      max-width: 800px; 
+      max-width: 900px; 
       margin: 40px auto; 
     }
     .api-box {
@@ -18,14 +18,25 @@
     #chat { 
       border: 1px solid #ccc; 
       padding: 10px; 
-      height: 280px; 
-      overflow-y: auto; 
+      min-height: 200px; 
       margin-bottom: 10px;
       white-space: pre-wrap;
     }
     .user { color: #0a58ca; margin: 6px 0; }
     .bot { color: #198754; margin: 6px 0; }
     .error { color: #dc3545; margin: 6px 0; }
+    .options {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #eee;
+      background: #fafafa;
+    }
+    .options label {
+      display: block;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -46,12 +57,27 @@
   <!-- SOHBET -->
   <div id="chat"></div>
 
-  <!-- MESAJ -->
+  <!-- SEÇENEKLER (başta gizli) -->
+  <div id="reasonBox" class="options hidden">
+    <strong>Neden değişiklik önerisi başlattığınızı belirtir misiniz?</strong>
+
+    <label><input type="checkbox" value="İlk doküman aktarımı"> İlk doküman aktarımı</label>
+    <label><input type="checkbox" value="Üretim ürün ağacı oluşturulması"> Üretim ürün ağacı oluşturulması</label>
+    <label><input type="checkbox" value="Doküman güncellenmesi"> Doküman güncellenmesi</label>
+    <label><input type="checkbox" value="Üretim ürün ağacı güncellenmesi"> Üretim ürün ağacı güncellenmesi</label>
+    <label><input type="checkbox" value="İş planı güncellemesi"> İş planı güncellemesi</label>
+    <label><input type="checkbox" value="Diğer"> Diğer</label>
+
+    <button id="continueBtn" style="margin-top:10px;">Devam Et</button>
+  </div>
+
+  <!-- MESAJ (ileride serbest yazı için) -->
   <input 
     id="messageInput" 
     type="text" 
     placeholder="Mesajını yaz..." 
-    style="width:70%">
+    style="width:70%" 
+    disabled>
   <button id="sendBtn" disabled>Gönder</button>
 
   <!-- JS -->
