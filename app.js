@@ -1,3 +1,6 @@
+console.log("app.js YÜKLENDİ");
+alert("app.js YÜKLENDİ");
+
 let API_KEY = null;
 
 const apiKeyInput = document.getElementById("apiKeyInput");
