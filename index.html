@@ -4,21 +4,55 @@
   <meta charset="UTF-8">
   <title>KY Akış Asistanı</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; }
-    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+    body { 
+      font-family: Arial, sans-serif; 
+      max-width: 800px; 
+      margin: 40px auto; 
+    }
+    #chat { 
+      border: 1px solid #ccc; 
+      padding: 10px; 
+      height: 300px; 
+      overflow-y: auto; 
+      margin-bottom: 10px;
+    }
     .user { color: #0a58ca; margin: 6px 0; }
     .bot { color: #198754; margin: 6px 0; }
+    .api-box {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px dashed #aaa;
+      background: #f8f9fa;
+    }
   </style>
 </head>
 <body>
 
   <h2>KY Akış Asistanı</h2>
 
+  <!-- API ANAHTARI GİRİŞ ALANI -->
+  <div class="api-box">
+    <input 
+      id="apiKeyInput" 
+      type="password" 
+      placeholder="OpenAI API anahtarını gir" 
+      style="width:60%">
+    <button id="checkApiBtn">API’yi Kontrol Et</button>
+    <span id="apiStatus" style="margin-left:10px;"></span>
+  </div>
+
+  <!-- SOHBET ALANI -->
   <div id="chat"></div>
 
-  <input id="messageInput" type="text" placeholder="Mesajını yaz..." style="width:70%">
-  <button id="sendBtn">Gönder</button>
+  <!-- MESAJ GİRİŞİ -->
+  <input 
+    id="messageInput" 
+    type="text" 
+    placeholder="Mesajını yaz..." 
+    style="width:70%">
+  <button id="sendBtn" disabled>Gönder</button>
 
+  <!-- JS DOSYASI -->
   <script src="app.js"></script>
 </body>
 </html>
