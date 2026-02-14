@@ -1,4 +1,3 @@
-// app.js
 console.log("app.js yüklendi");
 
 document.getElementById("sendBtn").addEventListener("click", () => {
