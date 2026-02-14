@@ -1,4 +1,10 @@
 // app.js
+console.log("app.js yüklendi");
+
+document.getElementById("sendBtn").addEventListener("click", () => {
+  console.log("Gönder butonuna basıldı");
+});
+
 const API_KEY = "BURAYA_GERCEK_ANAHTARI_YAZMA"; // sadece lokal testte
 
 document.getElementById("sendBtn").addEventListener("click", sendMessage);
