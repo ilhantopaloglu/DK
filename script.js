@@ -1,61 +1,45 @@
-let data;
-let currentQuestion;
-let finalResult = null;
+let current = "start";
 
-const questionContainer = document.getElementById("question-container");
-const answersContainer = document.getElementById("answers-container");
-const summary = document.getElementById("summary");
-const restartBtn = document.getElementById("restart-btn");
+const questionDiv = document.getElementById("question");
+const answersDiv = document.getElementById("answers");
+const resultDiv = document.getElementById("result");
+const restartBtn = document.getElementById("restart");
 
-fetch("questions.json")
-  .then(response => response.json())
-  .then(json => {
-    data = json;
-    loadQuestion(data.start);
-  });
+function loadQuestion(key) {
+    const node = flow[key];
+    questionDiv.innerHTML = `<h3>${node.text}</h3>`;
+    answersDiv.innerHTML = "";
+    resultDiv.style.display = "none";
 
-function loadQuestion(id) {
-  currentQuestion = data.questions[id];
-  questionContainer.innerHTML = `<h2>${currentQuestion.text}</h2>`;
-  answersContainer.innerHTML = "";
-  summary.style.display = "none";
-
-  currentQuestion.answers.forEach(answer => {
-    const button = document.createElement("button");
-    button.innerText = answer.text;
-    button.onclick = () => handleAnswer(answer);
-    answersContainer.appendChild(button);
-  });
+    node.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.innerText = answer.text;
+        btn.onclick = () => handleAnswer(answer);
+        answersDiv.appendChild(btn);
+    });
 }
 
 function handleAnswer(answer) {
-  if (answer.result) {
-    finalResult = answer.result;
-    showSummary();
-  } else {
-    loadQuestion(answer.next);
-  }
+    if (answer.result) {
+        showResult(answer.result);
+    } else {
+        current = answer.next;
+        loadQuestion(current);
+    }
 }
 
-function showSummary() {
-  questionContainer.innerHTML = "";
-  answersContainer.innerHTML = "";
-
-  let message = "";
-
-  if (finalResult === "fast") {
-    message = "<strong>FAST TRACK</strong><br>Basitleştirilmiş etki analizi uygulanabilir.";
-  } else if (finalResult === "full") {
-    message = "<strong>FULL TRACK</strong><br>Detaylı teknik, mali ve sözleşmesel etki analizi gereklidir.";
-  }
-
-  summary.innerHTML = message;
-  summary.style.display = "block";
-  restartBtn.style.display = "block";
+function showResult(text) {
+    questionDiv.innerHTML = "";
+    answersDiv.innerHTML = "";
+    resultDiv.innerHTML = `<strong>Sonuç:</strong><br>${text}`;
+    resultDiv.style.display = "block";
+    restartBtn.style.display = "block";
 }
 
-restartBtn.onclick = function () {
-  finalResult = null;
-  restartBtn.style.display = "none";
-  loadQuestion(data.start);
+restartBtn.onclick = function() {
+    current = "start";
+    restartBtn.style.display = "none";
+    loadQuestion(current);
 };
+
+loadQuestion(current);
