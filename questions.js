@@ -12,7 +12,7 @@ const flow = {
 
     /* -------- 1. Doküman İlk Aktarımı -------- */
     initial_transfer: {
-        text: "Ürün daha önce üretildi mi?",
+        text: "Dokümanı aktarılan ürün daha önce üretildi mi?",
         answers: [
             { text: "Hayır, ilk üretim olacak", result: "İlk üretim. Değişiklik uygulama analizi gerekmez." },
             { text: "Evet, önceden üretildi", next: "previous_production" }
@@ -24,7 +24,7 @@ const flow = {
         answers: [
             { text: "Evet", result: "Uyumlu üretim. İlave aksiyon gerekmiyor." },
             { text: "Hayır, taslak dokümana göre üretildi", next: "draft_production" },
-            { text: "Bilinmiyor", result: "Belirsizlik riski. Fiziksel-doküman uyum analizi yapılmalı." }
+            { text: "Bilinmiyor", result: "Belirsizlik riski. Fiziksel ürün ile doküman uyum analizi yapılmalı." }
         ]
     },
 
@@ -48,24 +48,24 @@ const flow = {
     nonconformity_level: {
         text: "Uygunsuzluk hangi seviyede yaşandı?",
         answers: [
-            { text: "Ürün seviyesinde", next: "apply_open_orders" },
-            { text: "Üst seviyede", next: "apply_open_orders" }
+            { text: "Dokümanı güncellenen ürün seviyesinde", next: "apply_open_orders" },
+            { text: "Dokümanı güncellenen ürünün üst seviyesinde", next: "apply_open_orders" }
         ]
     },
 
     /* -------- Uygulama Kapsamı -------- */
     apply_open_orders: {
-        text: "Açık siparişlere uygulanacak mı?",
+        text: "Dokümanı güncellenen ürüne ait açık siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Değişiklik açık siparişlere uygulanmayacak." },
+            { text: "Hayır", result: "Değişiklik ürüne ait açık siparişlere uygulanmayacak." },
             { text: "Evet", next: "open_completed" }
         ]
     },
 
     open_completed: {
-        text: "Montaj/Test tamamlanmış açık siparişlere uygulanacak mı?",
+        text: "Ürüne ait montaj/test adımı tamamlanmış açık siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Sadece montajı tamamlanmamış açık siparişlere uygulanacak." },
+            { text: "Hayır", result: "Sadece montajı tamamlanmamış açık ürün siparişlere uygulanacak." },
             { text: "Evet", next: "warehouse_level" }
         ]
     },
@@ -73,31 +73,31 @@ const flow = {
     warehouse_level: {
         text: "Depodaki ürünlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Açık siparişlere uygulanacak. Depoya uygulanmayacak." },
+            { text: "Hayır", result: "Ürüne ait açık siparişlere uygulanacak. Üretimi tamamlanmış/depodaki ürünlere uygulanmayacak." },
             { text: "Evet", next: "upper_open" }
         ]
     },
 
     upper_open: {
-        text: "Üst seviye açık siparişlere uygulanacak mı?",
+        text: "Doküman güncellenen ürünün üst seviyelerine ait açık siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Alt seviyede uygulanacak, üst seviyeye uygulanmayacak." },
+            { text: "Hayır", result: "Sadece ürün seviyesine uygulanacak, üst seviyelere uygulanmayacak." },
             { text: "Evet", next: "upper_completed" }
         ]
     },
 
     upper_completed: {
-        text: "Montaj/Test tamamlanmış üst seviye açık siparişlere uygulanacak mı?",
+        text: "Ürünün montajı/testı tamamlanmış açık üst seviye siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Üst seviyede sadece tamamlanmamış siparişlere uygulanacak." },
+            { text: "Hayır", result: "Ürünün montajı/testi tamamlanmamış açık üst seviyede siparişlerine uygulanacak." },
             { text: "Evet", next: "upper_warehouse" }
         ]
     },
 
     upper_warehouse: {
-        text: "Depodaki üst seviyelere uygulanacak mı?",
+        text: "Üretimi tamamlanmaşı/depodaki üst seviyelere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Üst seviye depo hariç uygulanacak." },
+            { text: "Hayır", result: "Ürünün montajı/testi tamamlanmış açık üst seviye siparişlerine uygulanacak. Depodaki üst seviyelere uygulanmayacak." },
             { text: "Evet", next: "customer_products" }
         ]
     },
@@ -105,8 +105,8 @@ const flow = {
     customer_products: {
         text: "Müşterideki ürünlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Müşteri hariç tüm seviyelere uygulanacak." },
-            { text: "Evet", result: "Tüm seviyeler dahil uygulanacak." }
+            { text: "Hayır", result: "Depodaki üst seviyelere uygulanacak." },
+            { text: "Evet", result: "Müşterideki dahil tüm seviyelere uygulanacak." }
         ]
     }
 
