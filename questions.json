@@ -1,0 +1,42 @@
+{
+  "start": "q1",
+  "questions": {
+    "q1": {
+      "text": "Değişiklik gerekçesi nedir?",
+      "answers": [
+        { "text": "Hata düzeltme", "next": "q2", "type": "mandatory" },
+        { "text": "Müşteri talebi", "next": "q3", "type": "contractual" },
+        { "text": "Regülasyon", "next": "q4", "type": "regulatory" },
+        { "text": "İyileştirme / Optimizasyon", "next": "q5", "type": "optional" }
+      ]
+    },
+    "q2": {
+      "text": "Hata sahada mı tespit edildi?",
+      "answers": [
+        { "text": "Evet", "result": "full" },
+        { "text": "Hayır", "result": "fast" }
+      ]
+    },
+    "q3": {
+      "text": "Talep sözleşme kapsamına giriyor mu?",
+      "answers": [
+        { "text": "Evet", "result": "fast" },
+        { "text": "Hayır", "result": "full" }
+      ]
+    },
+    "q4": {
+      "text": "Regülasyon zorunlu mu?",
+      "answers": [
+        { "text": "Evet", "result": "full" },
+        { "text": "Hayır", "result": "fast" }
+      ]
+    },
+    "q5": {
+      "text": "Performans veya maliyet üzerinde etkisi var mı?",
+      "answers": [
+        { "text": "Evet", "result": "full" },
+        { "text": "Hayır", "result": "fast" }
+      ]
+    }
+  }
+}
