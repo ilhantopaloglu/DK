@@ -46,7 +46,7 @@ const flow = {
     },
 
     nonconformity_level: {
-        text: "Uygunsuzluk hangi seviyede?",
+        text: "Uygunsuzluk hangi seviyede yaşandı?",
         answers: [
             { text: "Ürün seviyesinde", next: "apply_open_orders" },
             { text: "Üst seviyede", next: "apply_open_orders" }
