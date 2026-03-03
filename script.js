@@ -1,11 +1,21 @@
 document.addEventListener("DOMContentLoaded", function() {
 
+    if (typeof flow === "undefined") {
+        console.error("flow objesi yüklenmedi! questions.js yüklü mü?");
+        return;
+    }
+
     let current = "start";
 
     const questionDiv = document.getElementById("question");
     const answersDiv = document.getElementById("answers");
     const resultDiv = document.getElementById("result");
     const restartBtn = document.getElementById("restart");
+
+    if (!questionDiv || !answersDiv || !resultDiv || !restartBtn) {
+        console.error("HTML elementleri bulunamadı. ID’leri kontrol et!");
+        return;
+    }
 
     function loadQuestion(key) {
         const node = flow[key];
@@ -44,7 +54,5 @@ document.addEventListener("DOMContentLoaded", function() {
         loadQuestion(current);
     };
 
-    // Başlangıçta ilk soruyu yükle
     loadQuestion(current);
-
 });
