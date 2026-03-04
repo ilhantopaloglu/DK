@@ -124,16 +124,9 @@ const flow = {
     /* ========== DONANIM ÇEKİRDEĞİ/YAZILIM AKIŞI ========== */
     /* ===================================================== */
 
-    software_start: {
-        text: "Doküman ilk aktarım mı yoksa güncelleme mi?",
-        answers: [
-            { text: "Doküman İlk Aktarımı", next: "software_initial_transfer" },
-            { text: "Doküman Güncellemesi", next: "software_update_reason" }
-        ]
-    },
-
+    // artık software_start sorusu yok
     software_initial_transfer: {
-        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi?",
+        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi",
         answers: [
             { text: "Hayır, daha önce yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
             { text: "Evet, önceden yüklendi", next: "software_previous_production" }
@@ -166,10 +159,10 @@ const flow = {
     },
 
     software_customer_products: {
-        text: "Müşterideki sistemlere yeni sürüm yüklenecek mi?",
+        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi",
         answers: [
-            { text: "Hayır", result: "Müşterideki hariç tüm birimlere/sistemlere yeni sürüm yüklenecek." },
-            { text: "Evet", result: "Müşterideki dahil tüm birimlere/sistemlere yeni sürüm yüklenecek." }
+            { text: "Hayır, daha önce yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
+            { text: "Evet, önceden yüklendi", next: "software_previous_production" }
         ]
     }
 
