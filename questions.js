@@ -7,7 +7,7 @@ const flow = {
         text: "Değişiklik tipi nedir?",
         answers: [
             { text: "Donanım Değişikliği", next: "hardware_start" },
-            { text: "Yazılım Değişikliği", next: "software_start" }
+            { text: "Yazılım/Donanım Çekirdeği Değişikliği", next: "software_start" }
         ]
     },
 
@@ -24,7 +24,7 @@ const flow = {
     },
 
     hardware_initial_transfer: {
-        text: "Dokümanı aktarılan donanım daha önce üretildi mi?",
+        text: "Dokümanı yeni aktarılan donanım daha önce üretildi mi?",
         answers: [
             { text: "Hayır, daha önce üretilmedi", result: "Değişiklik uygulama analizi gerekmez." },
             { text: "Evet, önceden üretildi", next: "hardware_previous_production" }
@@ -81,9 +81,9 @@ const flow = {
     },
 
     hardware_warehouse_level: {
-        text: "Üretimi tamamlanmış / Depoya aktarılan ürünlere uygulanacak mı?",
+        text: "Üretimi tamamlanmış / Depoya aktarılan donanımlara uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Depoya aktarılmış donanımlara uygulanmayacak." },
+            { text: "Hayır", result: "Açık siparişlere uygulanacak. Depoya aktarılmış donanımlara uygulanmayacak." },
             { text: "Evet", next: "hardware_upper_open" }
         ]
     },
@@ -91,15 +91,15 @@ const flow = {
     hardware_upper_open: {
         text: "Donanımın üst seviyelerine ait açık siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Üst seviyelere uygulanmayacak." },
+            { text: "Hayır", result: "Açık sipariş ve depodaki donanımlara uygulanacak. Üst seviyelere uygulanmayacak." },
             { text: "Evet", next: "hardware_upper_completed" }
         ]
     },
 
     hardware_upper_completed: {
-        text: "Üst seviyeye ait montajı/testi tamamlanmış açık siparişlere uygulanacak mı?",
+        text: "Üst seviyeye ait montaj/test adımı tamamlanmış açık siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Henüz tamamlanmamış üst seviye siparişlere uygulanacak." },
+            { text: "Hayır", result: "Açık sipariş ve depodaki donanımlara + Sadece üst seviyelere ait montaj/test adımı henüz tamamlanmamış açık siparişlere uygulanacak." },
             { text: "Evet", next: "hardware_upper_warehouse" }
         ]
     },
@@ -107,7 +107,7 @@ const flow = {
     hardware_upper_warehouse: {
         text: "Üretimi tamamlanmış / Depoya aktarılan üst seviyelere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Depoya aktarılmış üst seviyelere uygulanmayacak." },
+            { text: "Hayır", result: "Açık sipariş ve depodaki donanımlara + Açık üst seviye siparişlerine uygulanacak. Depodaki üst seviyelere uygulanmayacak." },
             { text: "Evet", next: "hardware_customer_products" }
         ]
     },
@@ -115,13 +115,13 @@ const flow = {
     hardware_customer_products: {
         text: "Müşterideki ürünlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Saha hariç tüm seviyelere uygulanacak." },
+            { text: "Hayır", result: "Açık sipariş ve depodaki donanım + üst seviyelere uygulanacak." },
             { text: "Evet", result: "Müşterideki dahil tüm seviyelere uygulanacak." }
         ]
     },
 
     /* ===================================================== */
-    /* ================= YAZILIM AKIŞI ===================== */
+    /* ========== DONANIM ÇEKİRDEĞİ/YAZILIM AKIŞI ========== */
     /* ===================================================== */
 
     software_start: {
@@ -133,19 +133,19 @@ const flow = {
     },
 
     software_initial_transfer: {
-        text: "Dokümanı aktarılan yazılım daha önce üretildi mi?",
+        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi?",
         answers: [
-            { text: "Hayır, daha önce üretilmedi", result: "Değişiklik uygulama analizi gerekmez." },
-            { text: "Evet, önceden üretildi", next: "software_previous_production" }
+            { text: "Hayır, daha önce yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
+            { text: "Evet, önceden yüklendi", next: "software_previous_production" }
         ]
     },
 
     software_previous_production: {
-        text: "Önceden üretilen yazılım aktarılan revizyona uygun mu?",
+        text: "Birime/sisteme önceden yüklenen sürüm, aktarılan sürüm mü?",
         answers: [
-            { text: "Evet", result: "Uyumlu sürüm." },
+            { text: "Evet", result: "Önceden yüklenen birim/sistem parça+seri no bilgileri temin edilip, SAP'de ekipman kayıtları güncellenmeli." },
             { text: "Hayır", next: "software_apply_open_orders" },
-            { text: "Bilinmiyor", result: "Yazılım sürüm uyum analizi yapılmalı." }
+            { text: "Bilinmiyor", result: "Sürüm uyum analizi yapılmalı." }
         ]
     },
 
@@ -158,18 +158,18 @@ const flow = {
     },
 
     software_apply_open_orders: {
-        text: "Dokümanı güncellenen yazılıma ait açık siparişlere uygulanacak mı?",
+        text: "Daha önce üretilmiş birimlere/sistemlere yeni sürüm yüklenecek mi?",
         answers: [
-            { text: "Hayır", result: "Yeni sürümlere uygulanacak." },
+            { text: "Hayır", result: "Üretilmiş birimlere/sistemlere yüklü yazılım eski sürümde kalacak." },
             { text: "Evet", next: "software_customer_products" }
         ]
     },
 
     software_customer_products: {
-        text: "Müşterideki yazılımlara uygulanacak mı?",
+        text: "Müşterideki sistemlere yeni sürüm yüklenecek mi?",
         answers: [
-            { text: "Hayır", result: "Saha hariç uygulanacak." },
-            { text: "Evet", result: "Tüm sahaya uygulanacak." }
+            { text: "Hayır", result: "Müşterideki hariç tüm birimlere/sistemlere yeni sürüm yüklenecek." },
+            { text: "Evet", result: "Müşterideki dahil tüm birimlere/sistemlere yeni sürüm yüklenecek." }
         ]
     }
 
