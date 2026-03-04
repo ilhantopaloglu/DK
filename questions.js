@@ -15,7 +15,7 @@ const flow = {
     
     text: `Ürün daha önce üretildi/yüklendi mi?<br>
           <span class="question-note">
-          (Ürün: Dokümanı aktarılan donanım/yazılım)
+          Ürün: Dokümanı aktarılan donanım/yazılım
           </span>`
         answers: [
             { text: "Hayır, daha önce üretilmedi/yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
