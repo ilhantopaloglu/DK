@@ -1,106 +1,63 @@
 // script.js
-let historyStack = [];
-let currentKey = "start";
 
-document.addEventListener("DOMContentLoaded", function() {
+let reportData = {
+    type: "",
+    reason: "",
+    application: ""
+};
 
-    if (typeof flow === "undefined") {
-        console.error("flow objesi yüklenmedi! questions.js yüklü mü?");
-        return;
-    }
-
-    let current = "start";
-
-    const questionDiv = document.getElementById("question");
-    const answersDiv = document.getElementById("answers");
-    const resultDiv = document.getElementById("result");
-    const restartBtn = document.getElementById("restart");
-
-    if (!questionDiv || !answersDiv || !resultDiv || !restartBtn) {
-        console.error("HTML elementleri bulunamadı. ID’leri kontrol et!");
-        return;
-    }
-
-    function loadQuestion(key) {
+function loadQuestion(key) {
     const node = flow[key];
-
-    currentKey = key;
-    historyStack.push(key);
-
+    
+    // Soruyu göster
     questionDiv.innerHTML = `<h3>${node.text}</h3>`;
     answersDiv.innerHTML = "";
     resultDiv.style.display = "none";
 
-    node.answers.forEach(answer => {
+    // Her cevabı buton olarak ekle
+    node.answers.forEach(ans => {
         const btn = document.createElement("button");
-        btn.textContent = answer.text;
-
+        btn.textContent = ans.text;
         btn.onclick = () => {
-            if (answer.next) {
-                loadQuestion(answer.next);
-            } else if (answer.result) {
-                showResult(answer.result);
+            
+            // Ürün tipi ilk soruda belirleniyor
+            if (key === "start") reportData.type = ans.text;
+
+            // Güncelleme nedeni kaydet
+            if (key.includes("update_reason")) reportData.reason = ans.text;
+
+            // Eğer result var ise rapora yaz
+            if (ans.result) {
+                reportData.application = ans.result;
+                showReport();
+            } 
+            // Eğer next node varsa devam et
+            else if (ans.next) {
+                loadQuestion(ans.next);
             }
         };
-
         answersDiv.appendChild(btn);
     });
 
-    renderNavigationButtons();
-}
+    // GERİ ve ANA SAYFA butonları
+    const backBtn = document.createElement("button");
+    backBtn.textContent = "GERİ";
+    backBtn.onclick = () => loadPrevious(); // loadPrevious() fonksiyonu ile geri gidilebilir
+    answersDiv.appendChild(backBtn);
 
-    function renderNavigationButtons() {
-
-    const navDiv = document.getElementById("navButtons");
-    navDiv.innerHTML = "";
-
-    // GERİ butonu
-    if (historyStack.length > 1) {
-        const backBtn = document.createElement("button");
-        backBtn.textContent = "← GERİ";
-
-        backBtn.onclick = () => {
-            historyStack.pop(); // mevcut
-            const previous = historyStack.pop(); // bir önceki
-            loadQuestion(previous);
-        };
-
-        navDiv.appendChild(backBtn);
-    }
-
-    // ANA SAYFA butonu
     const homeBtn = document.createElement("button");
-    homeBtn.textContent = "🏠 ANA SAYFA";
-
-    homeBtn.onclick = () => {
-        historyStack = [];
-        loadQuestion("start");
-    };
-
-    navDiv.appendChild(homeBtn);
+    homeBtn.textContent = "ANA SAYFA";
+    homeBtn.onclick = () => loadQuestion("start");
+    answersDiv.appendChild(homeBtn);
 }
-    
-    function handleAnswer(answer) {
-        if (answer.result) {
-            showResult(answer.result);
-        } else {
-            current = answer.next;
-            loadQuestion(current);
-        }
-    }
 
-    function showResult(text) {
-    resultDiv.innerHTML = `<h3>Sonuç</h3><p>${text}</p>`;
+// Rapor gösterme
+function showReport() {
+    const text = `
+Değişiklik türü: ${reportData.type}
+Değişiklik gerekçesi: ${reportData.reason}
+Uygulama bilgisi: ${reportData.application}
+    `;
+    resultDiv.innerHTML = `<pre>${text}</pre>`;
     resultDiv.style.display = "block";
-
-    renderNavigationButtons();
 }
-
-    restartBtn.onclick = function() {
-        current = "start";
-        restartBtn.style.display = "none";
-        loadQuestion(current);
-    };
-
-    loadQuestion(current);
-});
