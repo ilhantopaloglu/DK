@@ -125,10 +125,10 @@ const flow = {
     },
 
     software_customer_products: {
-        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi?",
+        text: "Müşterideki yazılımlara uygulanacak mı?",
         answers: [
-            { text: "Hayır, daha önce yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
-            { text: "Evet, önceden yüklendi", next: "software_previous_production" }
+            { text: "Hayır", result: "Müşterideki hariç birimlere/sistemlere yeni sürüm yüklenecek. Müşterideki eski sürümde kalacak." },
+            { text: "Evet", result: "Müşterideki dahil tüm birimlere/sistemlere güncel sürüm yüklenecek." }
         ]
     }
 
