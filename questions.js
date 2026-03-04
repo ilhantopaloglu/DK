@@ -81,7 +81,7 @@ const flow = {
     upper_open: {
         text: "Doküman güncellenen ürünün üst seviyelerine ait açık siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Sadece ürün seviyesine uygulanacak, üst seviyelere uygulanmayacak." },
+            { text: "Hayır", result: "Açık sipariş ve depodaki ürünlere uygulanacak, üst seviyelere uygulanmayacak." },
             { text: "Evet", next: "upper_completed" }
         ]
     },
@@ -89,7 +89,7 @@ const flow = {
     upper_completed: {
         text: "Ürünün montajı/testı tamamlanmış açık üst seviye siparişlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Ürünün montajı/testi tamamlanmamış açık üst seviyede siparişlerine uygulanacak." },
+            { text: "Hayır", result: "Acık sipariş ve depodaki ürünlere uygulanacak + montajı/testi tamamlanmamış açık üst seviyede siparişlerine uygulanacak." },
             { text: "Evet", next: "upper_warehouse" }
         ]
     },
@@ -97,7 +97,7 @@ const flow = {
     upper_warehouse: {
         text: "Üretimi tamamlanmaşı/depodaki üst seviyelere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Ürünün montajı/testi tamamlanmış açık üst seviye siparişlerine uygulanacak. Depodaki üst seviyelere uygulanmayacak." },
+            { text: "Hayır", result: "Açık sipariş ve depodaki ürünlere + montajı/testi tamamlanmış açık üst seviye siparişlerine uygulanacak. Depodaki üst seviyelere uygulanmayacak." },
             { text: "Evet", next: "customer_products" }
         ]
     },
@@ -105,7 +105,7 @@ const flow = {
     customer_products: {
         text: "Müşterideki ürünlere uygulanacak mı?",
         answers: [
-            { text: "Hayır", result: "Depodaki üst seviyelere uygulanacak." },
+            { text: "Hayır", result: "Açık sipariş ve depodaki ürün + üst seviyelere uygulanacak." },
             { text: "Evet", result: "Müşterideki dahil tüm seviyelere uygulanacak." }
         ]
     }
