@@ -100,10 +100,11 @@ const flow = {
     },
     
     software_initial_transfer: {
-        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi",
+        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi?",
         answers: [
-            { text: "Hayır, daha önce yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
-            { text: "Evet, önceden yüklendi", next: "software_previous_production" }
+            { text: "Hayır, daha önce yüklenmedi", next: "software_apply_open_orders" },
+            { text: "Evet, önceden yüklendi", next: "software_previous_production" },
+            { text: "Bilinmiyor", next: "software_apply_open_orders" }
         ]
     },
 
