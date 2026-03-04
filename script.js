@@ -1,52 +1,51 @@
-// script.js
-
-// HTML elementlerini al
 const questionDiv = document.getElementById("question");
 const answersDiv = document.getElementById("answers");
 const resultDiv = document.getElementById("result");
+const navDiv = document.getElementById("navButtons");
 
-// Rapor için veri
 let reportData = {
     type: "",
     reason: "",
+    nonconformityLevel: "",
     application: ""
 };
-
-// Geçmişi tutmak için stack
-let historyStack = [];
-
-// Sayfa yüklendiğinde başlat
-document.addEventListener("DOMContentLoaded", () => {
-    loadQuestion("start");
-});
 
 // Soruyu yükle
 function loadQuestion(key) {
     const node = flow[key];
-    
-    // Geçmişi sakla
-    if (historyStack.length === 0 || historyStack[historyStack.length -1] !== key) {
-        historyStack.push(key);
-    }
+
+    // Nav butonları (GERİ + ANA SAYFA) üste taşı
+    navDiv.innerHTML = "";
+    const backBtn = document.createElement("button");
+    backBtn.textContent = "GERİ";
+    backBtn.onclick = () => loadPrevious();
+    navDiv.appendChild(backBtn);
+
+    const homeBtn = document.createElement("button");
+    homeBtn.textContent = "ANA SAYFA";
+    homeBtn.onclick = () => loadQuestion("start");
+    navDiv.appendChild(homeBtn);
 
     // Soruyu göster
     questionDiv.innerHTML = `<h3>${node.text}</h3>`;
     answersDiv.innerHTML = "";
     resultDiv.style.display = "none";
 
-    // Cevapları buton olarak ekle
+    // Her cevabı buton olarak ekle
     node.answers.forEach(ans => {
         const btn = document.createElement("button");
         btn.textContent = ans.text;
         btn.onclick = () => {
-            
-            // Ürün tipi ilk soruda kaydet
+            // Ürün tipi
             if (key === "start") reportData.type = ans.text;
 
-            // Güncelleme nedeni kaydet
+            // Güncelleme nedeni
             if (key.includes("update_reason")) reportData.reason = ans.text;
 
-            // Eğer result varsa rapor hazırla
+            // Uygunsuzluk seviyesi
+            if (key === "hardware_nonconformity_level") reportData.nonconformityLevel = ans.text;
+
+            // Eğer result varsa rapora yaz
             if (ans.result) {
                 reportData.application = ans.result;
                 showReport();
@@ -58,38 +57,50 @@ function loadQuestion(key) {
         };
         answersDiv.appendChild(btn);
     });
-
-    // GERİ butonu (sadece geçmiş varsa)
-    const backBtn = document.createElement("button");
-    backBtn.textContent = "GERİ";
-    backBtn.onclick = () => {
-        if (historyStack.length > 1) {
-            // Şu anki soruyu stack'ten çıkar
-            historyStack.pop();
-            // Önceki soruyu yükle
-            const prevKey = historyStack.pop(); 
-            loadQuestion(prevKey);
-        }
-    };
-    answersDiv.appendChild(backBtn);
-
-    // ANA SAYFA butonu
-    const homeBtn = document.createElement("button");
-    homeBtn.textContent = "ANA SAYFA";
-    homeBtn.onclick = () => {
-        historyStack = [];
-        loadQuestion("start");
-    };
-    answersDiv.appendChild(homeBtn);
 }
 
-// Rapor göster
+// Rapor gösterme
 function showReport() {
-    const text = `
+    let text = `
 Değişiklik türü: ${reportData.type}
 Değişiklik gerekçesi: ${reportData.reason}
-Uygulama bilgisi: ${reportData.application}
-    `;
-    resultDiv.innerHTML = `<pre>${text}</pre>`;
+`;
+
+    // Uygunsuzluk seviyesi varsa ekle
+    if (reportData.nonconformityLevel) {
+        text += `Uygunsuzluğun yaşandığı seviye: ${reportData.nonconformityLevel}\n`;
+    }
+
+    text += `Uygulama bilgisi: ${reportData.application}`;
+
+    // Raporu göster (taşmayı önlemek için style ayarı)
+    resultDiv.innerHTML = `<div style="
+        background-color: #cce5ff;
+        padding: 10px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    ">${text}</div>`;
     resultDiv.style.display = "block";
 }
+
+// GERİ fonksiyonu (basit bir stack kullanabiliriz)
+let historyStack = [];
+function loadPrevious() {
+    if (historyStack.length > 0) {
+        const prev = historyStack.pop();
+        loadQuestion(prev);
+    }
+}
+
+// loadQuestion çağrısında historyStack'e push et
+const originalLoadQuestion = loadQuestion;
+loadQuestion = function(key) {
+    if (historyStack.length === 0 || historyStack[historyStack.length - 1] !== key) {
+        historyStack.push(key);
+    }
+    originalLoadQuestion(key);
+}
+
+// Sayfa açıldığında başlat
+window.onload = () => loadQuestion("start");
