@@ -12,15 +12,16 @@ const flow = {
 
     /* -------- 1. Doküman İlk Aktarımı -------- */
     initial_transfer: {
-        text: "Dokümanı aktarılan ürün daha önce üretildi mi?",
+        text: "Ürün daha önce üretildi/yüklendi mi?
+            (Ürün: Dokümanı aktarılan donanım/yazılım)",
         answers: [
-            { text: "Hayır, ilk üretim olacak", result: "İlk üretim. Değişiklik uygulama analizi gerekmez." },
-            { text: "Evet, önceden üretildi", next: "previous_production" }
+            { text: "Hayır, daha önce üretilmedi/yüklenmedi", result: "İlk üretim/sürüm. Değişiklik uygulama analizi gerekmez." },
+            { text: "Evet, önceden üretildi/yüklendi", next: "previous_production" }
         ]
     },
 
     previous_production: {
-        text: "Önceden üretilen ürün aktarılan revizyona uygun mu?",
+        text: "Önceden üretilen/yüklenen ürün aktarılan revizyona uygun mu?",
         answers: [
             { text: "Evet", result: "Uyumlu üretim. İlave aksiyon gerekmiyor." },
             { text: "Hayır, taslak dokümana göre üretildi", next: "draft_production" },
