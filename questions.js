@@ -4,12 +4,12 @@ const flow = {
 
     /* -------- ÜRÜN TİPİ SEÇİMİ -------- */
     start: {
-        text: "Değişiklik tipi nedir?",
-        answers: [
-            { text: "Donanım Değişikliği", next: "hardware_start" },
-            { text: "Yazılım/Donanım Çekirdeği Değişikliği", next: "software_start" }
-        ]
-    },
+    text: "Değişiklik tipi nedir?",
+    answers: [
+        { text: "Donanım Değişikliği", next: "hardware_update_reason" }, // hardware_start yerine
+        { text: "Donanım Çekirdeği/Yazılım Değişikliği", next: "software_update_reason" } // software_start yerine
+    ]
+}
 
     /* ===================================================== */
     /* ================= DONANIM AKIŞI ===================== */
