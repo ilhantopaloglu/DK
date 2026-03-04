@@ -43,8 +43,8 @@ const flow = {
     hardware_draft_production: {
         text: "Taslak dokümana göre üretilen donanımlara ne yapılacak?",
         answers: [
-            { text: "Yeniden işlenecek (Rework)", result: "Rework uygulanacak." },
-            { text: "Olduğu gibi kullanılacak (As-is)", result: "As-is kabul. Sapma onayı gerekli." }
+            { text: "Yeniden işlenecek (Rework)", result: "Taslak dokümana göre üretilmiş donanımlar yeniden işlenecek edilecek." },
+            { text: "Olduğu gibi kullanılacak (As-is)", result: "Taslak dokümana göre üretilmiş donanımlar olduğu gibi kullanılacak. Sapma onayı gerekli." }
         ]
     },
 
