@@ -13,10 +13,7 @@ const flow = {
     /* -------- 1. Doküman İlk Aktarımı -------- */
     initial_transfer: {
     
-    text: `Ürün daha önce üretildi/yüklendi mi?<br>
-          <span class="question-note">
-          Ürün: Dokümanı aktarılan donanım/yazılım
-          </span>`
+    text: "Dokümanı aktarılan ürün daha önce üretildi/yüklendi mi?"
         answers: [
             { text: "Hayır, daha önce üretilmedi/yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
             { text: "Evet, önceden üretildi/yüklendi", next: "previous_production" }
