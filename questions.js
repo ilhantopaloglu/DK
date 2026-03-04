@@ -6,10 +6,10 @@ const flow = {
     start: {
     text: "Değişiklik tipi nedir?",
     answers: [
-        { text: "Donanım Değişikliği", next: "hardware_update_reason" }, // hardware_start yerine
-        { text: "Donanım Çekirdeği/Yazılım Değişikliği", next: "software_update_reason" } // software_start yerine
+        { text: "Donanım Değişikliği", next: "hardware_update_reason" },
+        { text: "Donanım Çekirdeği/Yazılım Değişikliği", next: "software_update_reason" }
     ]
-}
+},
 
     /* ===================================================== */
     /* ================= DONANIM AKIŞI ===================== */
