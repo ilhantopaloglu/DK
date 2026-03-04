@@ -94,8 +94,8 @@ const flow = {
     software_update_reason: {
         text: "Güncelleme nedeni nedir?",
         answers: [
-            { text: "Uygunsuzluk giderme", next: "software_apply_open_orders" },
-            { text: "İyileştirme", next: "software_apply_open_orders" }
+            { text: "Uygunsuzluk giderme", next: "software_initial_transfer" },
+            { text: "İyileştirme", next: "software_initial_transfer" }
         ]
     },
     
@@ -125,7 +125,7 @@ const flow = {
     },
 
     software_customer_products: {
-        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi",
+        text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi?",
         answers: [
             { text: "Hayır, daha önce yüklenmedi", result: "Değişiklik uygulama analizi gerekmez." },
             { text: "Evet, önceden yüklendi", next: "software_previous_production" }
