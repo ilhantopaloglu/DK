@@ -15,39 +15,6 @@ const flow = {
     /* ================= DONANIM AKIŞI ===================== */
     /* ===================================================== */
 
-    hardware_start: {
-        text: "Doküman ilk aktarım mı yoksa güncelleme mi?",
-        answers: [
-            { text: "Doküman İlk Aktarımı", next: "hardware_initial_transfer" },
-            { text: "Doküman Güncellemesi", next: "hardware_update_reason" }
-        ]
-    },
-
-    hardware_initial_transfer: {
-        text: "Dokümanı yeni aktarılan donanım daha önce üretildi mi?",
-        answers: [
-            { text: "Hayır, daha önce üretilmedi", result: "Değişiklik uygulama analizi gerekmez." },
-            { text: "Evet, önceden üretildi", next: "hardware_previous_production" }
-        ]
-    },
-
-    hardware_previous_production: {
-        text: "Önceden üretilen donanım aktarılan revizyona uygun mu?",
-        answers: [
-            { text: "Evet", result: "Uyumlu üretim. İlave aksiyon gerekmiyor." },
-            { text: "Hayır, taslak dokümana göre üretildi", next: "hardware_draft_production" },
-            { text: "Bilinmiyor", result: "Belirsizlik riski. Donanım ile doküman uyum analizi yapılmalı." }
-        ]
-    },
-
-    hardware_draft_production: {
-        text: "Taslak dokümana göre üretilen donanımlara ne yapılacak?",
-        answers: [
-            { text: "Yeniden işlenecek (Rework)", result: "Taslak dokümana göre üretilmiş donanımlar yeniden işlenecek." },
-            { text: "Olduğu gibi kullanılacak (As-is)", result: "Taslak dokümana göre üretilmiş donanımlar olduğu gibi kullanılacak. Sapma onayı gerekli." }
-        ]
-    },
-
     hardware_update_reason: {
         text: "Güncelleme nedeni nedir?",
         answers: [
@@ -124,7 +91,14 @@ const flow = {
     /* ========== DONANIM ÇEKİRDEĞİ/YAZILIM AKIŞI ========== */
     /* ===================================================== */
 
-    // artık software_start sorusu yok
+    software_update_reason: {
+        text: "Güncelleme nedeni nedir?",
+        answers: [
+            { text: "Uygunsuzluk giderme", next: "software_apply_open_orders" },
+            { text: "İyileştirme", next: "software_apply_open_orders" }
+        ]
+    },
+    
     software_initial_transfer: {
         text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi",
         answers: [
@@ -139,14 +113,6 @@ const flow = {
             { text: "Evet", result: "Önceden yüklenen birim/sistem parça+seri no bilgileri temin edilip, SAP'de ekipman kayıtları güncellenmeli." },
             { text: "Hayır", next: "software_apply_open_orders" },
             { text: "Bilinmiyor", result: "Sürüm uyum analizi yapılmalı." }
-        ]
-    },
-
-    software_update_reason: {
-        text: "Güncelleme nedeni nedir?",
-        answers: [
-            { text: "Uygunsuzluk giderme", next: "software_apply_open_orders" },
-            { text: "İyileştirme", next: "software_apply_open_orders" }
         ]
     },
 
