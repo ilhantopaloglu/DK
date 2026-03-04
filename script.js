@@ -1,4 +1,7 @@
 // script.js
+let historyStack = [];
+let currentKey = "start";
+
 document.addEventListener("DOMContentLoaded", function() {
 
     if (typeof flow === "undefined") {
@@ -19,19 +22,64 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function loadQuestion(key) {
-        const node = flow[key];
-        questionDiv.innerHTML = `<h3>${node.text}</h3>`;
-        answersDiv.innerHTML = "";
-        resultDiv.style.display = "none";
+    const node = flow[key];
 
-        node.answers.forEach(answer => {
-            const btn = document.createElement("button");
-            btn.innerText = answer.text;
-            btn.onclick = () => handleAnswer(answer);
-            answersDiv.appendChild(btn);
-        });
+    currentKey = key;
+    historyStack.push(key);
+
+    questionDiv.innerHTML = `<h3>${node.text}</h3>`;
+    answersDiv.innerHTML = "";
+    resultDiv.style.display = "none";
+
+    node.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.textContent = answer.text;
+
+        btn.onclick = () => {
+            if (answer.next) {
+                loadQuestion(answer.next);
+            } else if (answer.result) {
+                showResult(answer.result);
+            }
+        };
+
+        answersDiv.appendChild(btn);
+    });
+
+    renderNavigationButtons();
+}
+
+    function renderNavigationButtons() {
+
+    const navDiv = document.getElementById("navButtons");
+    navDiv.innerHTML = "";
+
+    // GERİ butonu
+    if (historyStack.length > 1) {
+        const backBtn = document.createElement("button");
+        backBtn.textContent = "← GERİ";
+
+        backBtn.onclick = () => {
+            historyStack.pop(); // mevcut
+            const previous = historyStack.pop(); // bir önceki
+            loadQuestion(previous);
+        };
+
+        navDiv.appendChild(backBtn);
     }
 
+    // ANA SAYFA butonu
+    const homeBtn = document.createElement("button");
+    homeBtn.textContent = "🏠 ANA SAYFA";
+
+    homeBtn.onclick = () => {
+        historyStack = [];
+        loadQuestion("start");
+    };
+
+    navDiv.appendChild(homeBtn);
+}
+    
     function handleAnswer(answer) {
         if (answer.result) {
             showResult(answer.result);
@@ -42,12 +90,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function showResult(text) {
-        questionDiv.innerHTML = "";
-        answersDiv.innerHTML = "";
-        resultDiv.innerHTML = `<strong>Sonuç:</strong><br>${text}`;
-        resultDiv.style.display = "block";
-        restartBtn.style.display = "block";
-    }
+    resultDiv.innerHTML = `<h3>Sonuç</h3><p>${text}</p>`;
+    resultDiv.style.display = "block";
+
+    renderNavigationButtons();
+}
 
     restartBtn.onclick = function() {
         current = "start";
