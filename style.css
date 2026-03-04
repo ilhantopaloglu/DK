@@ -13,6 +13,14 @@ body {
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
 
+.question-note {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85em;
+    font-weight: normal;
+    color: #666;
+}
+
 h1 {
     text-align: center;
 }
