@@ -24,13 +24,34 @@ const flow = {
     },
 
     hardware_nonconformity_level: {
-        text: "Uygunsuzluk hangi seviyede yaşandı?",
-        answers: [
-            { text: "Dokümanı güncellenen donanım seviyesinde", next: "hardware_apply_open_orders" },
-            { text: "Donanımın üst seviyesinde", next: "hardware_apply_open_orders" }
-        ]
+    text: "Uygunsuzluk hangi seviyede yaşandı?",
+    answers: [
+        { text: "Dokümanı güncellenen donanım seviyesinde", next: "nonconformity_activity" },
+        { text: "Donanımın üst seviyesinde", next: "nonconformity_activity" }
+    ]
+  },
+
+    nonconformity_activity: {
+    text: "Hangi projenin hangi faaliyeti esnasında uygunsuzluk yaşandı?",
+    input: "textarea",
+    next: "nonconformity_notification"
     },
 
+    nonconformity_notification: {
+    text: "Uygunsuzluğa ait bildirim açıldı mı?",
+    answers: [
+        { text: "Evet", next: "notification_number" },
+        { text: "Hayır", next: "hardware_apply_open_orders" }
+    ]
+    },
+
+    notification_number: {
+    text: "Bildirim numarasını giriniz",
+    input: "text",
+    maxLength: 40,
+    next: "hardware_apply_open_orders"
+    },
+    
     hardware_apply_open_orders: {
         text: "Dokümanı güncellenen donanıma ait açık siparişlere uygulanacak mı?",
         answers: [
