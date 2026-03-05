@@ -7,10 +7,10 @@ let reportData = {
     type: "",
     reason: "",
     level: "",
-    application: "",
-    note: ""
     activity: "",
     notification: "",
+    application: "",
+    note: ""
 };
 
 let history = [];
@@ -19,48 +19,10 @@ function loadQuestion(key) {
 
     const node = flow[key];
 
-    // Eğer serbest metin sorusu varsa
-if(node.input){
-
-    const input = document.createElement(
-        node.input === "textarea" ? "textarea" : "input"
-    );
-
-    if(node.input === "text"){
-        input.type = "text";
-        if(node.maxLength) input.maxLength = node.maxLength;
-    }
-
-    input.style.width = "100%";
-    input.style.marginBottom = "10px";
-
-    answersDiv.appendChild(input);
-
-    const btn = document.createElement("button");
-    btn.textContent = "DEVAM";
-
-    btn.onclick = () => {
-
-        history.push(key);
-
-        if(key === "nonconformity_activity")
-            reportData.activity = input.value;
-
-        if(key === "notification_number")
-            reportData.notification = input.value;
-
-        loadQuestion(node.next);
-    };
-
-    answersDiv.appendChild(btn);
-
-    return;
-}
     answersDiv.innerHTML = "";
     questionDiv.innerHTML = "";
     resultDiv.style.display = "none";
 
-    // GERİ ve ANA SAYFA
     navDiv.innerHTML = "";
 
     const backBtn = document.createElement("button");
@@ -78,10 +40,51 @@ if(node.input){
     };
     navDiv.appendChild(homeBtn);
 
-    // Soruyu göster
     questionDiv.innerHTML = `<h3>${node.text}</h3>`;
 
-    // Cevap butonları
+    /* INPUT SORULARI */
+
+    if (node.input) {
+
+        let input;
+
+        if (node.input === "textarea") {
+            input = document.createElement("textarea");
+            input.style.height = "80px";
+        } else {
+            input = document.createElement("input");
+            input.type = "text";
+            if (node.maxLength) input.maxLength = node.maxLength;
+        }
+
+        input.style.width = "100%";
+        input.style.marginBottom = "10px";
+
+        answersDiv.appendChild(input);
+
+        const btn = document.createElement("button");
+        btn.textContent = "DEVAM";
+
+        btn.onclick = () => {
+
+            history.push(key);
+
+            if (key === "nonconformity_activity")
+                reportData.activity = input.value;
+
+            if (key === "notification_number")
+                reportData.notification = input.value;
+
+            loadQuestion(node.next);
+        };
+
+        answersDiv.appendChild(btn);
+
+        return;
+    }
+
+    /* NORMAL SORULAR */
+
     node.answers.forEach(ans => {
 
         const btn = document.createElement("button");
@@ -122,21 +125,21 @@ function showReport() {
 `Değişiklik türü: ${reportData.type}
 Değişiklik gerekçesi: ${reportData.reason}
 `;
-    if(reportData.activity)
-text += `Uygunsuzluk faaliyeti: ${reportData.activity}\n`;
-
-if(reportData.notification)
-text += `Uygunsuzluk bildirimi: ${reportData.notification}\n`;
 
     if (reportData.level)
         text += `Uygunsuzluğun yaşandığı seviye: ${reportData.level}\n`;
+
+    if (reportData.activity)
+        text += `Uygunsuzluk faaliyeti: ${reportData.activity}\n`;
+
+    if (reportData.notification)
+        text += `Uygunsuzluk bildirimi: ${reportData.notification}\n`;
 
     text += `Uygulama bilgisi: ${reportData.application}\n`;
 
     resultDiv.innerHTML = `
         <pre id="reportBox" style="
             white-space: pre-wrap;
-            word-wrap: break-word;
             background:#cce5ff;
             padding:10px;
             border-radius:5px;
@@ -146,15 +149,7 @@ text += `Uygunsuzluk bildirimi: ${reportData.notification}\n`;
             <b>Ek Açıklama</b><br>
             <textarea id="extraNote"
                 placeholder="İhtiyaç duyulması halinde ek açıklama aşağıdaki alana yazılabilir"
-                style="
-                    width:100%;
-                    height:100px;
-                    margin-top:5px;
-                    padding:8px;
-                    border-radius:5px;
-                    border:1px solid #ccc;
-                "
-            ></textarea>
+                style="width:100%;height:100px;margin-top:5px;"></textarea>
         </div>
     `;
 
@@ -174,15 +169,19 @@ Değişiklik gerekçesi: ${reportData.reason}
         if (reportData.level)
             updated += `Uygunsuzluğun yaşandığı seviye: ${reportData.level}\n`;
 
+        if (reportData.activity)
+            updated += `Uygunsuzluk faaliyeti: ${reportData.activity}\n`;
+
+        if (reportData.notification)
+            updated += `Uygunsuzluk bildirimi: ${reportData.notification}\n`;
+
         updated += `Uygulama bilgisi: ${reportData.application}\n`;
 
         if (reportData.note)
             updated += `Ek açıklama: ${reportData.note}`;
 
         document.getElementById("reportBox").textContent = updated;
-
     });
 }
 
-// Başlat
 loadQuestion("start");
