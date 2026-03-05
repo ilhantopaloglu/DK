@@ -51,7 +51,7 @@ function loadQuestion(key) {
         if (node.input === "textarea") {
 
             input = document.createElement("textarea");
-            input.placeholder = "Açıklamanızı buraya yazabilirsiniz";
+            input.placeholder = "Açıklamanız 25 karakterden fazla olacak şekilde buraya yazınız";
             input.style.width = "100%";
             input.style.height = "100px";
             input.style.marginBottom = "10px";
@@ -77,6 +77,23 @@ function loadQuestion(key) {
         btn.textContent = "TAMAM";
         btn.style.display = "block";
         btn.style.marginTop = "5px";
+
+        /* 25 karakter kontrolü */
+
+        if (key === "nonconformity_activity") {
+
+            btn.disabled = true;
+
+            input.addEventListener("input", () => {
+
+                if (input.value.trim().length >= 25) {
+                    btn.disabled = false;
+                } else {
+                    btn.disabled = true;
+                }
+
+            });
+        }
 
         btn.onclick = () => {
 
