@@ -1,15 +1,17 @@
 // questions.js
 // Flow objesi: karar ağacı
+
 const flow = {
 
     /* -------- ÜRÜN TİPİ SEÇİMİ -------- */
+
     start: {
-    text: "Değişiklik tipi nedir?",
-    answers: [
-        { text: "Donanım Değişikliği", next: "hardware_update_reason" },
-        { text: "Donanım Çekirdeği/Yazılım Değişikliği", next: "software_update_reason" }
-    ]
-},
+        text: "Değişiklik tipi nedir?",
+        answers: [
+            { text: "Donanım Değişikliği", next: "hardware_update_reason" },
+            { text: "Donanım Çekirdeği/Yazılım Değişikliği", next: "software_update_reason" }
+        ]
+    },
 
     /* ===================================================== */
     /* ================= DONANIM AKIŞI ===================== */
@@ -24,34 +26,40 @@ const flow = {
     },
 
     hardware_nonconformity_level: {
-    text: "Uygunsuzluk hangi seviyede yaşandı?",
-    answers: [
-        { text: "Dokümanı güncellenen donanım seviyesinde", next: "nonconformity_activity" },
-        { text: "Donanımın üst seviyesinde", next: "nonconformity_activity" }
-    ]
-  },
+        text: "Uygunsuzluk hangi seviyede yaşandı?",
+        answers: [
+            { text: "Dokümanı güncellenen donanım seviyesinde", next: "nonconformity_activity" },
+            { text: "Donanımın üst seviyesinde", next: "nonconformity_activity" }
+        ]
+    },
+
+    /* YENİ SORU */
 
     nonconformity_activity: {
-    text: "Hangi projenin hangi faaliyeti esnasında uygunsuzluk yaşandı?",
-    input: "textarea",
-    next: "nonconformity_notification"
+        text: "Hangi projenin hangi faaliyeti esnasında uygunsuzluk yaşandı?",
+        input: "textarea",
+        next: "nonconformity_notification"
     },
+
+    /* YENİ SORU */
 
     nonconformity_notification: {
-    text: "Uygunsuzluğa ait bildirim açıldı mı?",
-    answers: [
-        { text: "Evet", next: "notification_number" },
-        { text: "Hayır", next: "hardware_apply_open_orders" }
-    ]
+        text: "Uygunsuzluğa ait bildirim açıldı mı?",
+        answers: [
+            { text: "Evet", next: "notification_number" },
+            { text: "Hayır", next: "hardware_apply_open_orders" }
+        ]
     },
 
+    /* YENİ SORU */
+
     notification_number: {
-    text: "Bildirim numarasını giriniz",
-    input: "text",
-    maxLength: 40,
-    next: "hardware_apply_open_orders"
+        text: "Bildirim numarasını giriniz",
+        input: "text",
+        maxLength: 40,
+        next: "hardware_apply_open_orders"
     },
-    
+
     hardware_apply_open_orders: {
         text: "Dokümanı güncellenen donanıma ait açık siparişlere uygulanacak mı?",
         answers: [
@@ -119,7 +127,7 @@ const flow = {
             { text: "İyileştirme", next: "software_initial_transfer" }
         ]
     },
-    
+
     software_initial_transfer: {
         text: "Dokümanı aktarılan sürüm daha önce birime/sisteme yüklendi mi?",
         answers: [
