@@ -25,13 +25,6 @@ function loadQuestion(key) {
 
     navDiv.innerHTML = "";
 
-    const backBtn = document.createElement("button");
-    backBtn.textContent = "GERİ";
-    backBtn.onclick = () => {
-        if (history.length > 0) loadQuestion(history.pop());
-    };
-    navDiv.appendChild(backBtn);
-
     const homeBtn = document.createElement("button");
     homeBtn.textContent = "ANA SAYFA";
     homeBtn.onclick = () => {
@@ -40,6 +33,13 @@ function loadQuestion(key) {
     };
     navDiv.appendChild(homeBtn);
 
+    const backBtn = document.createElement("button");
+    backBtn.textContent = "GERİ";
+    backBtn.onclick = () => {
+        if (history.length > 0) loadQuestion(history.pop());
+    };
+    navDiv.appendChild(backBtn);
+    
     questionDiv.innerHTML = `<h3>${node.text}</h3>`;
 
     /* INPUT SORULARI */
