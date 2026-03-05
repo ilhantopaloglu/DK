@@ -9,6 +9,8 @@ let reportData = {
     level: "",
     application: "",
     note: ""
+    activity: "",
+    notification: "",
 };
 
 let history = [];
@@ -17,6 +19,43 @@ function loadQuestion(key) {
 
     const node = flow[key];
 
+    // Eğer serbest metin sorusu varsa
+if(node.input){
+
+    const input = document.createElement(
+        node.input === "textarea" ? "textarea" : "input"
+    );
+
+    if(node.input === "text"){
+        input.type = "text";
+        if(node.maxLength) input.maxLength = node.maxLength;
+    }
+
+    input.style.width = "100%";
+    input.style.marginBottom = "10px";
+
+    answersDiv.appendChild(input);
+
+    const btn = document.createElement("button");
+    btn.textContent = "DEVAM";
+
+    btn.onclick = () => {
+
+        history.push(key);
+
+        if(key === "nonconformity_activity")
+            reportData.activity = input.value;
+
+        if(key === "notification_number")
+            reportData.notification = input.value;
+
+        loadQuestion(node.next);
+    };
+
+    answersDiv.appendChild(btn);
+
+    return;
+}
     answersDiv.innerHTML = "";
     questionDiv.innerHTML = "";
     resultDiv.style.display = "none";
@@ -83,6 +122,11 @@ function showReport() {
 `Değişiklik türü: ${reportData.type}
 Değişiklik gerekçesi: ${reportData.reason}
 `;
+    if(reportData.activity)
+text += `Uygunsuzluk faaliyeti: ${reportData.activity}\n`;
+
+if(reportData.notification)
+text += `Uygunsuzluk bildirimi: ${reportData.notification}\n`;
 
     if (reportData.level)
         text += `Uygunsuzluğun yaşandığı seviye: ${reportData.level}\n`;
