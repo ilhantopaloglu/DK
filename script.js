@@ -30,6 +30,10 @@ function loadQuestion(key) {
     backBtn.onclick = () => {
         if (history.length > 0) loadQuestion(history.pop());
     };
+    navDiv.appendChild(homeBtn);
+
+    questionDiv.innerHTML = `<h3>${node.text}</h3>`;
+    
     navDiv.appendChild(backBtn);
 
     const homeBtn = document.createElement("button");
@@ -38,9 +42,6 @@ function loadQuestion(key) {
         history = [];
         loadQuestion("start");
     };
-    navDiv.appendChild(homeBtn);
-
-    questionDiv.innerHTML = `<h3>${node.text}</h3>`;
 
     /* ---------- SERBEST METİN SORULARI ---------- */
 
