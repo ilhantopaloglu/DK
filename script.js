@@ -25,6 +25,13 @@ function loadQuestion(key) {
 
     navDiv.innerHTML = "";
 
+    const backBtn = document.createElement("button");
+    backBtn.textContent = "GERİ";
+    backBtn.onclick = () => {
+        if (history.length > 0) loadQuestion(history.pop());
+    };
+    navDiv.appendChild(backBtn);
+
     const homeBtn = document.createElement("button");
     homeBtn.textContent = "ANA SAYFA";
     homeBtn.onclick = () => {
@@ -33,47 +40,55 @@ function loadQuestion(key) {
     };
     navDiv.appendChild(homeBtn);
 
-    const backBtn = document.createElement("button");
-    backBtn.textContent = "GERİ";
-    backBtn.onclick = () => {
-        if (history.length > 0) loadQuestion(history.pop());
-    };
-    navDiv.appendChild(backBtn);
-    
     questionDiv.innerHTML = `<h3>${node.text}</h3>`;
 
-    /* INPUT SORULARI */
+    /* ---------- SERBEST METİN SORULARI ---------- */
 
     if (node.input) {
 
         let input;
 
         if (node.input === "textarea") {
+
             input = document.createElement("textarea");
-            input.style.height = "80px";
+            input.placeholder = "Açıklamanızı buraya yazabilirsiniz";
+            input.style.width = "100%";
+            input.style.height = "100px";
+            input.style.marginBottom = "10px";
+            input.style.padding = "6px";
+
         } else {
+
             input = document.createElement("input");
             input.type = "text";
-            if (node.maxLength) input.maxLength = node.maxLength;
-        }
+            input.placeholder = "Bildirim numarası giriniz";
 
-        input.style.width = "100%";
-        input.style.marginBottom = "10px";
+            if (node.maxLength) input.maxLength = node.maxLength;
+
+            input.style.width = "100%";
+            input.style.height = "30px";
+            input.style.marginBottom = "10px";
+            input.style.padding = "5px";
+        }
 
         answersDiv.appendChild(input);
 
         const btn = document.createElement("button");
-        btn.textContent = "DEVAM";
+        btn.textContent = "TAMAM";
+        btn.style.display = "block";
+        btn.style.marginTop = "5px";
 
         btn.onclick = () => {
 
             history.push(key);
 
-            if (key === "nonconformity_activity")
+            if (key === "nonconformity_activity") {
                 reportData.activity = input.value;
+            }
 
-            if (key === "notification_number")
+            if (key === "notification_number") {
                 reportData.notification = input.value;
+            }
 
             loadQuestion(node.next);
         };
@@ -83,7 +98,7 @@ function loadQuestion(key) {
         return;
     }
 
-    /* NORMAL SORULAR */
+    /* ---------- NORMAL SORULAR ---------- */
 
     node.answers.forEach(ans => {
 
@@ -118,7 +133,6 @@ function loadQuestion(key) {
     });
 }
 
-
 function showReport() {
 
     let text =
@@ -130,10 +144,10 @@ Değişiklik gerekçesi: ${reportData.reason}
         text += `Uygunsuzluğun yaşandığı seviye: ${reportData.level}\n`;
 
     if (reportData.activity)
-        text += `Uygunsuzluk faaliyeti: ${reportData.activity}\n`;
+        text += `Uygunsuzluğun yaşandığı faaliyet: ${reportData.activity}\n`;
 
     if (reportData.notification)
-        text += `Uygunsuzluk bildirimi: ${reportData.notification}\n`;
+        text += `Uygunsuzluk bildirim numarası: ${reportData.notification}\n`;
 
     text += `Uygulama bilgisi: ${reportData.application}\n`;
 
@@ -170,10 +184,10 @@ Değişiklik gerekçesi: ${reportData.reason}
             updated += `Uygunsuzluğun yaşandığı seviye: ${reportData.level}\n`;
 
         if (reportData.activity)
-            updated += `Uygunsuzluk faaliyeti: ${reportData.activity}\n`;
+            updated += `Uygunsuzluğun yaşandığı faaliyet: ${reportData.activity}\n`;
 
         if (reportData.notification)
-            updated += `Uygunsuzluk bildirimi: ${reportData.notification}\n`;
+            updated += `Uygunsuzluk bildirim numarası: ${reportData.notification}\n`;
 
         updated += `Uygulama bilgisi: ${reportData.application}\n`;
 
@@ -181,6 +195,7 @@ Değişiklik gerekçesi: ${reportData.reason}
             updated += `Ek açıklama: ${reportData.note}`;
 
         document.getElementById("reportBox").textContent = updated;
+
     });
 }
 
