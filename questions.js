@@ -20,8 +20,9 @@ const flow = {
     hardware_update_reason: {
         text: "Güncelleme nedeni nedir?",
         answers: [
-            { text: "Uygunsuzluk giderme", next: "hardware_nonconformity_level" },
-            { text: "İyileştirme", next: "hardware_apply_open_orders" }
+            { text: "Hata giderme", next: "hardware_nonconformity_level" },
+            { text: "İyileştirme", next: "hardware_apply_open_orders" },
+            { text: "Önleyici", next: "hardware_apply_open_orders" }
         ]
     },
 
