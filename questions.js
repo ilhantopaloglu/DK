@@ -21,8 +21,8 @@ const flow = {
         text: "Güncelleme nedeni nedir?",
         answers: [
             { text: "Hata giderme", next: "hardware_nonconformity_level" },
-            { text: "İyileştirme", next: "hardware_apply_open_orders" },
-            { text: "Önleyici", next: "hardware_apply_open_orders" }
+            { text: "İyileştirme", next: "hardware_nonconformity_level" },
+            { text: "Önleyici", next: "hardware_nonconformity_level" }
         ]
     },
 
@@ -33,8 +33,6 @@ const flow = {
             { text: "Donanımın üst seviyesinde", next: "nonconformity_activity" }
         ]
     },
-
-    /* YENİ SORU */
 
     nonconformity_activity: {
         text: "Hangi projenin hangi faaliyeti esnasında uygunsuzluk yaşandı?",
