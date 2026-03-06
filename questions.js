@@ -46,7 +46,7 @@ const flow = {
         text: "Uygunsuzluğa ait bildirim açıldı mı?",
         answers: [
             { text: "Evet", next: "notification_number" },
-            { text: "Hayır", next: "hardware_apply_open_orders" }
+            { text: "Hayır", next: "degisiklik_tanimi" }
         ]
     },
 
