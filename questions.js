@@ -125,7 +125,8 @@ const flow = {
         text: "Güncelleme nedeni nedir?",
         answers: [
             { text: "Uygunsuzluk giderme", next: "software_initial_transfer" },
-            { text: "İyileştirme", next: "software_initial_transfer" }
+            { text: "İyileştirme", next: "software_initial_transfer" },
+            { text: "Önleyici", next: "software_initial_transfer" }
         ]
     },
 
