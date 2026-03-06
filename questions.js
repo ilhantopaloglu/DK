@@ -21,8 +21,8 @@ const flow = {
         text: "Güncelleme nedeni nedir?",
         answers: [
             { text: "Hata giderme", next: "hardware_nonconformity_level" },
-            { text: "İyileştirme", next: "hardware_nonconformity_level" },
-            { text: "Önleyici", next: "hardware_nonconformity_level" }
+            { text: "İyileştirme", next: "iyilestirme_tanimi" },
+            { text: "Önleyici", next: "onleyici_tanimi" }
         ]
     },
 
@@ -56,11 +56,23 @@ const flow = {
     },
 
     degisiklik_tanimi: {
-        text: "Yapılan değişikliği tanımlayınız",
+        text: "Yapılan değişikliği ve gerekçesini belirtiniz",
+        input: "textarea",
+        next: "hardware_apply_open_orders"
+    },
+    
+    iyilestirme_tanimi: {
+        text: "Yapılan iyileştirmeyi ve gerekçesini belirtiniz",
         input: "textarea",
         next: "hardware_apply_open_orders"
     },
 
+    onleyici_tanimi: {
+        text: "Yapılan önleyici çalışmayı ve gerekçesini belirtiniz",
+        input: "textarea",
+        next: "hardware_apply_open_orders"
+    },
+    
     hardware_apply_open_orders: {
         text: "Dokümanı güncellenen donanıma ait açık siparişlere uygulanacak mı?",
         answers: [
