@@ -4,13 +4,13 @@ const resultDiv = document.getElementById("result");
 const navDiv = document.getElementById("navButtons");
 
 let reportData = {
-    degisiklik_tipi: "",
-    guncelleme_nedeni: "",
-    uygunsuzluk_seviyesi: "",
+    degisiklikTipi: "",
+    guncellemeNedeni: "",
+    uygunsuzlukSeviyesi: "",
     faaliyet: "",
-    bildirim_acildi: "",
-    bildirim_numarasi: "",
-    degisiklik_tanimi: ""
+    bildirim: "",
+    bildirimNo: "",
+    aciklama: ""
 };
 
 let history = [];
@@ -19,7 +19,6 @@ let currentKey = null;
 function loadQuestion(key) {
 
     currentKey = key;
-
     const q = flow[key];
 
     questionDiv.innerHTML = q.text;
@@ -29,14 +28,14 @@ function loadQuestion(key) {
 
     history.push(key);
 
-    /* CEVAP BUTONLARI */
+    /* CEVAPLAR */
 
     if (q.answers) {
 
         q.answers.forEach(answer => {
 
             const btn = document.createElement("button");
-            btn.textContent = answer.text;
+            btn.innerText = answer.text;
 
             btn.onclick = () => {
 
@@ -58,7 +57,7 @@ function loadQuestion(key) {
 
     }
 
-    /* INPUT SORULARI */
+    /* INPUT */
 
     if (q.input) {
 
@@ -81,7 +80,7 @@ function loadQuestion(key) {
         answersDiv.appendChild(input);
 
         const btn = document.createElement("button");
-        btn.textContent = "Devam";
+        btn.innerText = "Devam";
 
         btn.onclick = () => {
 
@@ -99,7 +98,7 @@ function loadQuestion(key) {
     if (history.length > 1) {
 
         const backBtn = document.createElement("button");
-        backBtn.textContent = "Geri";
+        backBtn.innerText = "Geri";
 
         backBtn.onclick = () => {
 
@@ -120,16 +119,16 @@ function saveAnswer(key, value) {
     switch (key) {
 
         case "start":
-            reportData.degisiklik_tipi = value;
+            reportData.degisiklikTipi = value;
             break;
 
         case "hardware_update_reason":
         case "software_update_reason":
-            reportData.guncelleme_nedeni = value;
+            reportData.guncellemeNedeni = value;
             break;
 
         case "hardware_nonconformity_level":
-            reportData.uygunsuzluk_seviyesi = value;
+            reportData.uygunsuzlukSeviyesi = value;
             break;
 
         case "nonconformity_activity":
@@ -137,50 +136,57 @@ function saveAnswer(key, value) {
             break;
 
         case "nonconformity_notification":
-            reportData.bildirim_acildi = value;
+            reportData.bildirim = value;
             break;
 
         case "notification_number":
-            reportData.bildirim_numarasi = value;
+            reportData.bildirimNo = value;
             break;
 
         case "degisiklik_tanimi":
-            reportData.degisiklik_tanimi = value;
+        case "iyilestirme_tanimi":
+        case "onleyici_tanimi":
+            reportData.aciklama = value;
             break;
 
     }
 
 }
 
-function showResult(text) {
+function showResult(resultText) {
 
-    questionDiv.innerHTML = "Sonuç";
-
+    questionDiv.innerHTML = "Değişiklik Analizi Sonucu";
     answersDiv.innerHTML = "";
 
     resultDiv.innerHTML = `
 
-    <h3>Değişiklik Analizi</h3>
+    <h3>Analiz Özeti</h3>
 
-    <b>Değişiklik Tipi:</b> ${reportData.degisiklik_tipi}<br><br>
+    <b>Değişiklik Tipi:</b><br>
+    ${reportData.degisiklikTipi}<br><br>
 
-    <b>Güncelleme Nedeni:</b> ${reportData.guncelleme_nedeni}<br><br>
+    <b>Güncelleme Nedeni:</b><br>
+    ${reportData.guncellemeNedeni}<br><br>
 
-    <b>Uygunsuzluk Seviyesi:</b> ${reportData.uygunsuzluk_seviyesi}<br><br>
+    <b>Uygunsuzluk Seviyesi:</b><br>
+    ${reportData.uygunsuzlukSeviyesi}<br><br>
 
-    <b>Faaliyet:</b> ${reportData.faaliyet}<br><br>
+    <b>Faaliyet:</b><br>
+    ${reportData.faaliyet}<br><br>
 
-    <b>Bildirim Açıldı mı:</b> ${reportData.bildirim_acildi}<br><br>
+    <b>Bildirim Açıldı mı:</b><br>
+    ${reportData.bildirim}<br><br>
 
-    <b>Bildirim Numarası:</b> ${reportData.bildirim_numarasi}<br><br>
+    <b>Bildirim Numarası:</b><br>
+    ${reportData.bildirimNo}<br><br>
 
-    <b>Değişiklik Tanımı:</b><br>
-    ${reportData.degisiklik_tanimi}<br><br>
+    <b>Açıklama:</b><br>
+    ${reportData.aciklama}<br><br>
 
     <hr>
 
     <b>Karar:</b><br>
-    ${text}
+    ${resultText}
 
     `;
 
