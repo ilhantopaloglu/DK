@@ -58,8 +58,14 @@ const flow = {
         text: "Bildirim numarasını giriniz",
         input: "text",
         maxLength: 40,
-        next: "hardware_apply_open_orders"
+        next: "degisiklik_tanimi"
     },
+
+    degisiklik_tanimi; {
+        text: "Yapılan değişikliği tanımlayınız",
+        input: "textarea",
+        next: "hardware_apply_open_orders"
+        
 
     hardware_apply_open_orders: {
         text: "Dokümanı güncellenen donanıma ait açık siparişlere uygulanacak mı?",
