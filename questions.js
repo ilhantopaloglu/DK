@@ -42,8 +42,6 @@ const flow = {
         next: "nonconformity_notification"
     },
 
-    /* YENİ SORU */
-
     nonconformity_notification: {
         text: "Uygunsuzluğa ait bildirim açıldı mı?",
         answers: [
@@ -52,8 +50,6 @@ const flow = {
         ]
     },
 
-    /* YENİ SORU */
-
     notification_number: {
         text: "Bildirim numarasını giriniz",
         input: "text",
@@ -61,11 +57,11 @@ const flow = {
         next: "degisiklik_tanimi"
     },
 
-    degisiklik_tanimi; {
+    degisiklik_tanimi: {
         text: "Yapılan değişikliği tanımlayınız",
         input: "textarea",
         next: "hardware_apply_open_orders"
-        
+    },
 
     hardware_apply_open_orders: {
         text: "Dokümanı güncellenen donanıma ait açık siparişlere uygulanacak mı?",
