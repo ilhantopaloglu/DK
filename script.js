@@ -20,26 +20,28 @@ function loadQuestion(key) {
     const node = flow[key];
 
     answersDiv.innerHTML = "";
-    questionDiv.innerHTML = "";
+    questionDiv.innerHTML = `<h3>${node.text}</h3>`;
     resultDiv.style.display = "none";
 
     navDiv.innerHTML = "";
 
+    /* NAV BUTONLARI */
+
     const backBtn = document.createElement("button");
-backBtn.textContent = "GERİ";
-backBtn.onclick = () => {
-    if (history.length > 0) loadQuestion(history.pop());
-};
+    backBtn.textContent = "GERİ";
+    backBtn.onclick = () => {
+        if (history.length > 0) loadQuestion(history.pop());
+    };
 
-const homeBtn = document.createElement("button");
-homeBtn.textContent = "ANA SAYFA";
-homeBtn.onclick = () => {
-    history = [];
-    loadQuestion("start");
-};
+    const homeBtn = document.createElement("button");
+    homeBtn.textContent = "ANA SAYFA";
+    homeBtn.onclick = () => {
+        history = [];
+        loadQuestion("start");
+    };
 
-navDiv.appendChild(homeBtn);
-navDiv.appendChild(backBtn);
+    navDiv.appendChild(homeBtn);
+    navDiv.appendChild(backBtn);
 
     /* ---------- SERBEST METİN SORULARI ---------- */
 
